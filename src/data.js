@@ -1,9 +1,11 @@
+import { projectTranslations, serviceTranslations } from "./i18n/content.ru";
 export const projects = [
   {
     name: "AETHER",
     type: "Digital Identity",
     year: "2026",
     image: "aether",
+    alt: "Liquid metallic identity on lavender",
     tag: "Beyond the ordinary.",
     description:
       "An identity for a new perspective. AETHER explores the space between the tangible and the imagined, bringing a fluid visual language to an independent culture platform.",
@@ -16,6 +18,7 @@ export const projects = [
     type: "Art Direction",
     year: "2025",
     image: "form",
+    alt: "Sculptural terracotta object on a warm stone backdrop",
     tag: "Material has a voice.",
     description:
       "A study of everyday forms with uncommon character. We imagined a contemporary objects label through a tactile, deliberately restrained editorial lens.",
@@ -28,6 +31,7 @@ export const projects = [
     type: "Interactive Experience",
     year: "2025",
     image: "nova",
+    alt: "Orbital violet geometry on black",
     tag: "Enter another dimension.",
     description:
       "An exploratory digital world for a fictional electronic arts festival. NOVA turns browsing into an act of discovery, guided by sound-inspired forms and orbital motion.",
@@ -40,6 +44,7 @@ export const projects = [
     type: "Creative Commerce",
     year: "2024",
     image: "objects",
+    alt: "Sage colored design object with a lime display",
     tag: "Less, but with feeling.",
     description:
       "A concept store for things worth keeping. OBJECTS brings a slower, more considered approach to commerce, placing the story of each piece before the transaction.",
@@ -74,3 +79,21 @@ export const services = [
     image: "form",
   },
 ];
+
+export function getProjects(language) {
+  return language === "ru"
+    ? projects.map((project) => ({
+        ...project,
+        ...projectTranslations[project.image],
+      }))
+    : projects;
+}
+
+export function getServices(language) {
+  return language === "ru"
+    ? services.map((service) => ({
+        ...service,
+        ...serviceTranslations[service.image],
+      }))
+    : services;
+}
