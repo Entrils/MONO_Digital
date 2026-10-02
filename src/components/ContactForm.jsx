@@ -1,76 +1,120 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { services } from "../data";
+import { getServices } from "../data";
+import { useLanguage } from "../i18n/LanguageContext";
 import s from "../App.module.css";
+
+function validationMessage(field, t) {
+  field.setCustomValidity("");
+  if (field.validity.valueMissing) return t("validation.required");
+  if (field.validity.typeMismatch) return t("validation.email");
+  if (field.validity.tooShort)
+    return t("validation.short", { min: field.minLength });
+  return "";
+}
+
+const budgets = [
+  { value: "5000-10000", min: 5000, max: 10000 },
+  { value: "10000-20000", min: 10000, max: 20000 },
+  { value: "20000-50000", min: 20000, max: 50000 },
+  { value: "50000-plus", min: 50000 },
+];
+
 export default function ContactForm() {
-  const [status, setStatus] = useState("");
+  const { language, t } = useLanguage();
+  const services = getServices(language);
+  const [submitted, setSubmitted] = useState(false);
+  const ref = useRef();
+  const currency = new Intl.NumberFormat(
+    language === "ru" ? "ru-RU" : "en-US",
+    {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    },
+  );
+  useEffect(() => {
+    for (const field of ref.current.elements) {
+      if (field.validity?.customError)
+        field.setCustomValidity(validationMessage(field, t));
+    }
+  }, [t]);
   return (
     <form
+      ref={ref}
       className={s.form}
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (e.currentTarget.reportValidity())
-          setStatus(
-            "Your brief is ready. This is a demo — nothing has been sent or stored. You can copy it into your email to a studio of your choice.",
-          );
+      onInput={(event) => {
+        event.target.setCustomValidity?.("");
+        setSubmitted(false);
+      }}
+      onInvalidCapture={(event) =>
+        event.target.setCustomValidity(validationMessage(event.target, t))
+      }
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (event.currentTarget.reportValidity()) setSubmitted(true);
       }}
     >
       <div className={s.formIntro}>
-        <span className={s.eyebrow}>YOUR NEXT BIG THING STARTS HERE</span>
-        <p>Tell us what you have in mind.</p>
+        <span className={s.eyebrow}>{t("form.kicker")}</span>
+        <p>{t("form.intro")}</p>
       </div>
       <label>
-        Name{" "}
+        {t("form.name")}
         <input
           name="name"
           autoComplete="name"
-          placeholder="Your name"
+          placeholder={t("form.namePlaceholder")}
           required
           minLength={2}
           maxLength={100}
         />
       </label>
       <label>
-        Email{" "}
+        {t("form.email")}
         <input
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="you@company.com"
+          placeholder={t("form.emailPlaceholder")}
           required
           maxLength={254}
         />
       </label>
       <label>
-        Project type{" "}
+        {t("form.type")}
         <select name="type" required defaultValue="">
           <option value="" disabled>
-            Select a service
+            {t("form.servicePlaceholder")}
           </option>
-          {services.map((x) => (
-            <option key={x.name}>{x.name}</option>
+          {services.map((service) => (
+            <option key={service.image} value={service.image}>
+              {service.name}
+            </option>
           ))}
-          <option>Something different</option>
+          <option value="other">{t("form.other")}</option>
         </select>
       </label>
       <label>
-        Budget{" "}
+        {t("form.budget")}
         <select name="budget" required defaultValue="">
           <option value="" disabled>
-            Select a range
+            {t("form.budgetPlaceholder")}
           </option>
-          <option>$5,000–$10,000</option>
-          <option>$10,000–$20,000</option>
-          <option>$20,000–$50,000</option>
-          <option>$50,000+</option>
-          <option>Let’s discuss</option>
+          {budgets.map(({ value, min, max }) => (
+            <option key={value} value={value}>
+              {currency.format(min)}
+              {max ? `–${currency.format(max)}` : "+"}
+            </option>
+          ))}
+          <option value="discuss">{t("form.discuss")}</option>
         </select>
       </label>
       <label className={s.message}>
-        Message{" "}
+        {t("form.message")}
         <textarea
           name="message"
-          placeholder="The idea. The ambition. The beautifully impossible."
+          placeholder={t("form.messagePlaceholder")}
           required
           minLength={10}
           maxLength={5000}
@@ -78,13 +122,14 @@ export default function ContactForm() {
         />
       </label>
       <div className={s.formEnd}>
-        <p>DEMO FORM — NO DATA IS SENT OR STORED.</p>
+        <p>{t("form.demo")}</p>
         <button type="submit" className={s.submit}>
-          REVIEW MY BRIEF <ArrowUpRight size={20} />
+          {t("form.submit")}
+          <ArrowUpRight size={20} />
         </button>
       </div>
       <p className={s.status} role="status">
-        {status}
+        {submitted ? t("form.success") : ""}
       </p>
     </form>
   );

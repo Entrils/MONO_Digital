@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, Component } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
+import { useLanguage } from "../i18n/LanguageContext";
 import s from "../App.module.css";
 class Boundary extends Component {
   state = { failed: false };
@@ -37,6 +38,7 @@ function Knot({ reduced, mobile }) {
   );
 }
 export default function Sculpture({ reduced }) {
+  const { t } = useLanguage();
   const holder = useRef();
   const [active, setActive] = useState(true);
   const mobile = matchMedia("(max-width:767px)").matches;
@@ -55,7 +57,7 @@ export default function Sculpture({ reduced }) {
           dpr={[1, mobile ? 1 : 1.5]}
           camera={{ position: [0, 0, 8], fov: 45 }}
           gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
-          aria-label="Slowly rotating interactive chrome knot"
+          aria-label={t("sculpture.label")}
         >
           <ambientLight intensity={0.25} />
           <Knot reduced={reduced} mobile={mobile} />
