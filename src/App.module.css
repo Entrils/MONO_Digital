@@ -1528,3 +1528,218 @@
   color: #aaa;
   text-align: center;
 }
+
+/* Language controls remain available while the mobile overlay is open. */
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #ffffff35;
+  border-radius: 30px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 65;
+}
+.languageSwitcher button {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0 7px;
+  border-radius: 50%;
+  font: 10px var(--mono);
+  background: transparent;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+.languageSwitcher button[aria-pressed="true"] {
+  background: var(--lime);
+  color: #101010;
+}
+.languageSwitcher button:hover:not([aria-pressed="true"]) {
+  background: #ffffff20;
+}
+.russian .heroTitle {
+  font-size: 11.1vw;
+  letter-spacing: -0.065em;
+}
+.russian .heroTitle .lastLine {
+  font-size: 10.5vw;
+}
+.russian .heroTitle small {
+  margin-left: 3%;
+}
+.russian .workHeading h2 {
+  font-size: 8.1vw;
+}
+.russian .workHeading p {
+  max-width: 240px;
+}
+.russian .studio h2 {
+  font-size: 7.3vw;
+}
+.russian .services h2 {
+  font-size: 7vw;
+}
+.russian .service h3 {
+  font-size: 3.2vw;
+}
+.russian .experiment h2 {
+  font-size: 9.5vw;
+}
+.russian .contact h2 {
+  font-size: 7.5vw;
+}
+.russian .projectInfo {
+  flex-wrap: wrap;
+}
+.russian .projectInfo span {
+  font-size: 8px;
+}
+.russian .workFoot {
+  gap: 20px;
+  line-height: 1.8;
+}
+.russian .workFoot a {
+  flex-shrink: 0;
+}
+.russian .studioLead {
+  font-size: 22px;
+}
+.russian .formEnd p {
+  max-width: 400px;
+  line-height: 1.8;
+}
+@media (min-width: 1600px) {
+  .russian .heroTitle {
+    font-size: min(11.1vw, 214px);
+  }
+  .russian .heroTitle .lastLine {
+    font-size: min(10.5vw, 202px);
+  }
+  .russian .projectInfo span {
+    font-size: 11px;
+  }
+}
+@media (max-width: 1024px) {
+  .languageSwitcher button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .russian .heroTitle small {
+    display: none;
+  }
+  .russian .projectInfo span {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+  .russian .projectInfo svg {
+    display: none;
+  }
+  .russian .studioLead {
+    font-size: 21px;
+  }
+}
+@media (max-width: 767px) {
+  .header {
+    gap: 8px;
+  }
+  .languageSwitcher {
+    margin-left: auto;
+  }
+  .languageSwitcher button {
+    min-width: 38px;
+    min-height: 38px;
+  }
+  .app:has(.mobileMenu) .languageSwitcher {
+    border-color: #10101040;
+  }
+  .app:has(.mobileMenu) .languageSwitcher button[aria-pressed="true"] {
+    color: var(--lime);
+    background: #101010;
+  }
+  .app:has(.mobileMenu)
+    .languageSwitcher
+    button:hover:not([aria-pressed="true"]) {
+    background: #10101015;
+  }
+  .mobileMenu > a {
+    font-size: 12.5vw;
+  }
+  .russian .heroTitle {
+    font-size: 13.7vw;
+  }
+  .russian .heroTitle > span:nth-child(2) {
+    font-size: 14.8vw;
+  }
+  .russian .heroTitle .lastLine {
+    font-size: 16.3vw;
+  }
+  .russian .lastLine em {
+    font-size: 17.5vw;
+    letter-spacing: -0.065em;
+  }
+  .russian .heroBottom p {
+    max-width: 160px;
+    font-size: 8px;
+  }
+  .russian .heroMeta {
+    font-size: 6px;
+  }
+  .russian .heroMeta > span:last-child {
+    max-width: 140px;
+  }
+  .russian .workHeading h2 {
+    font-size: 13vw;
+  }
+  .russian .workHeading p {
+    margin-left: 30%;
+    max-width: 230px;
+  }
+  .russian .workFoot {
+    flex-direction: column;
+    gap: 12px;
+    font-size: 7px;
+  }
+  .russian .workFoot a {
+    white-space: normal;
+  }
+  .russian .studio h2 {
+    font-size: 8.8vw;
+    line-height: 1.08;
+  }
+  .russian .studioLead {
+    font-size: 19px;
+  }
+  .russian .services h2 {
+    font-size: 10vw;
+  }
+  .russian .service h3 {
+    font-size: 5.2vw;
+  }
+  .russian .experiment h2 {
+    font-size: 10.1vw;
+    line-height: 1.05;
+  }
+  .russian .contact h2 {
+    font-size: 9.3vw;
+  }
+  .russian .projectInfo span {
+    font-size: 8px;
+  }
+  .russian .sectionTop {
+    align-items: flex-start;
+  }
+  .russian .sectionTop .eyebrow {
+    font-size: 7px;
+    line-height: 1.7;
+  }
+  .russian .availability {
+    max-width: 125px;
+    align-items: flex-start;
+    line-height: 1.7;
+  }
+  .russian .availability i {
+    margin-top: 2px;
+  }
+}
