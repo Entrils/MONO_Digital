@@ -1,38 +1,52 @@
 # MONO® Digital Studio
 
-An independent agency concept built with React 19, Vite, JavaScript and CSS Modules. Includes GSAP / ScrollTrigger, Lenis, Three.js, React Three Fiber, Drei and Lucide.
+Одностраничный сайт концептуальной digital-студии: крупная типографика, интерактивная хромированная 3D-скульптура, портфолио, услуги и форма брифа. Русская и английская версии переключаются без перезагрузки.
 
-## Development
+## Запуск
 
-Requires Node.js 20.19+ (or 22.12+).
+Требуется Node.js 20.19+ или 22.12+.
 
-```sh
+```bash
 npm ci
-npm run dev
-npm run build
-npm run preview
+npm run dev       # разработка
+npm run test:i18n # DOM-проверки локализации
+npm run build     # сборка в dist/
+npm run preview   # просмотр сборки
 ```
 
-## Structure
+**Стек:** React 19, Vite, JavaScript, CSS Modules, GSAP + ScrollTrigger, Lenis, Three.js, React Three Fiber, Drei, Lucide React. Tailwind не используется.
 
-- `src/App.jsx`: page composition, navigation and animation lifecycle
-- `src/components/`: magnetic button, project dialog, enquiry form and lazy-loaded 3D scene
-- `src/data.js`: editable project and service content
-- `src/App.module.css`: responsive component styles and design tokens in `global.css`
-- `public/art/`: original lightweight SVG project artwork
+## Локализация
 
-## Interaction and accessibility
+Переключатель **EN / RU** доступен в шапке, в том числе при открытом мобильном меню. Приоритет языка: параметр `?lang=ru` или `?lang=en` → сохранённый выбор → поддерживаемый язык браузера → английский. Выбор хранится в `localStorage` под ключом `mono-language`; при недоступном хранилище сайт продолжает работать.
 
-Native modal dialogs support Escape, focus containment and focus restoration. Mobile navigation supports Escape and keyboard focus cycling. Service rows work by click, keyboard or desktop hover. Form fields use native validation and announce a demo-only result; no information is transmitted or stored. All four portfolio projects and the studio are fictional concepts; social profiles and operational email are intentionally not invented.
+Переведены интерфейс, описания проектов и услуг, форма, сообщения валидации, подписи для скринридеров и метаданные. Переключение обновляет атрибут `lang`, заголовок страницы и описание, сохраняет заполненный бриф и выбранные значения. Бюджеты отображаются в долларах США с форматированием выбранного языка; конвертации валют нет. Названия MONO, AETHER, FORM/01, NOVA, OBJECTS и авторские изображения проектов сохраняют оригинальное написание.
 
-Reduced-motion preferences disable scrolling and reveal animation, continuous 3D rendering, marquee motion and decorative rotation. Mobile uses a lower-resolution 3D mesh and pixel ratio. The canvas pauses continuous rendering outside the hero viewport. WebGL errors have a static fallback. System font fallbacks preserve readability if Google Fonts is unavailable.
+## Структура
 
-## Hosting
+| Путь                             | Назначение                                                               |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| `src/App.jsx`                    | Секции страницы, навигация, жизненный цикл анимаций                      |
+| `src/components/`                | Переключатель языков, 3D-сцена, модальные кейсы, форма, магнитная кнопка |
+| `src/i18n/messages.js`           | Словари интерфейса EN / RU                                               |
+| `src/i18n/content.ru.js`         | Русские описания проектов и услуг                                        |
+| `src/i18n/LanguageContext.jsx`   | Выбор языка, URL, хранение, метаданные                                   |
+| `src/data.js`                    | Данные проектов и услуг, английские описания                             |
+| `src/App.module.css`             | Стили компонентов и адаптация русской типографики                        |
+| `src/global.css`                 | Шрифты, переменные, базовые правила доступности                          |
+| `public/art/`                    | Оригинальные лёгкие SVG-композиции                                       |
+| `scripts/check-localization.mjs` | Воспроизводимые DOM-проверки EN / RU                                     |
 
-The Vite output is `dist/`. It can be hosted on any static web host. `.openai/hosting.json` associates the source with its private Sites deployment.
+## Взаимодействия и доступность
 
-## Verification
+Кейсы открываются в нативном диалоге с закрытием по Escape. Мобильное меню поддерживает клавиатуру и удержание фокуса; услуги раскрываются по нажатию, с клавиатуры или наведением на компьютере. Переключатель языков сообщает выбранное состояние скринридеру.
 
-`npm run build` validates the production bundle. The responsive stylesheet covers 320, 375, 768, 1024, 1440 and 1920px layouts. Browser-based visual and interaction QA requires the shared cloud browser tool; this session did not expose `cua_repl.js`, so those checks are not claimed as completed.
+Форма проверяет обязательные поля и адрес электронной почты. **Это деморежим: бриф не отправляется и не сохраняется.** Студия и четыре проекта вымышлены; реальные контакты и соцсети не подставлены.
 
-DOM-level checks also passed for all internal anchors, a single H1, four portfolio entries, mobile menu opening and Escape handling, service expansion, required fields, invalid email rejection and the demo-only form confirmation. These checks used JSDOM with the 3D scene stubbed, and do not replace visual browser QA.
+Настройка `prefers-reduced-motion` отключает плавный скролл, анимации появления и непрерывное вращение. На мобильных упрощены геометрия и разрешение 3D; вне первого экрана непрерывный рендеринг останавливается. При ошибке WebGL предусмотрена статичная замена. Основной интерфейс и 3D-библиотеки загружаются отдельными модулями.
+
+## Проверки и публикация
+
+`npm run build` проверяет production-сборку. `npm run test:i18n` проверяет приоритет выбора языка, сохранение состояния формы, локализованные метаданные и ошибки, кейсы, навигацию с клавиатуры и работу без доступа к хранилищу браузера. Они не проверяют реальную геометрию страницы и WebGL. Визуальная проверка размеров 320, 375, 768, 1024, 1440 и 1920 px требует браузера; в текущей сессии инструмент управления браузером недоступен.
+
+Содержимое `dist/` можно разместить на любом статическом хостинге. Файл `.openai/hosting.json` связывает исходники с приватной публикацией Sites. Изменения находятся в ветке `feat/mono-digital-studio` и draft PR № 1; основная ветка `base` не изменяется.
