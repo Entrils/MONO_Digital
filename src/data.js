@@ -5,7 +5,7 @@ export const projects = [
     type: "Digital Identity",
     year: "2026",
     image: "aether",
-    alt: "Liquid metallic identity on lavender",
+    alt: "Cobalt clothbound art book, letterpress cards and architectural prints on a steel table",
     tag: "Beyond the ordinary.",
     description:
       "An identity for a new perspective. AETHER explores the space between the tangible and the imagined, bringing a fluid visual language to an independent culture platform.",
@@ -18,7 +18,7 @@ export const projects = [
     type: "Art Direction",
     year: "2025",
     image: "form",
-    alt: "Sculptural terracotta object on a warm stone backdrop",
+    alt: "Oxblood leather and chrome lounge chair in a sunlit limestone interior",
     tag: "Material has a voice.",
     description:
       "A study of everyday forms with uncommon character. We imagined a contemporary objects label through a tactile, deliberately restrained editorial lens.",
@@ -31,20 +31,20 @@ export const projects = [
     type: "Interactive Experience",
     year: "2025",
     image: "nova",
-    alt: "Orbital violet geometry on black",
+    alt: "Monumental red and cobalt light installation inside an industrial exhibition hall",
     tag: "Enter another dimension.",
     description:
       "An exploratory digital world for a fictional electronic arts festival. NOVA turns browsing into an act of discovery, guided by sound-inspired forms and orbital motion.",
     scope: ["Experience design", "Creative development", "Motion system"],
     detail:
-      "A generative visual language translates rhythm into geometry. The interface balances experimental interactions with a clear, accessible path through the program.",
+      "A spatial visual language translates rhythm into architecture. Monumental light forms and an industrial setting establish a world that carries through to a clear, accessible digital experience.",
   },
   {
     name: "OBJECTS",
     type: "Creative Commerce",
     year: "2024",
     image: "objects",
-    alt: "Sage colored design object with a lime display",
+    alt: "Olive task lamp, amber glass, ceramics and linen on a walnut table",
     tag: "Less, but with feeling.",
     description:
       "A concept store for things worth keeping. OBJECTS brings a slower, more considered approach to commerce, placing the story of each piece before the transaction.",

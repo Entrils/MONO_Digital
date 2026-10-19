@@ -1743,3 +1743,44 @@
     margin-top: 2px;
   }
 }
+
+/* Give the new editorial imagery room; preserve complete scenes in case studies. */
+.projectImage {
+  aspect-ratio: 1.12;
+  background: #262622;
+}
+.project1 .projectImage {
+  aspect-ratio: 1.25;
+}
+.project2 .projectImage {
+  aspect-ratio: 1.2;
+}
+.projectImage img {
+  display: block;
+}
+.dialog > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 650px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  float: none;
+}
+.dialogBody {
+  margin-left: 0;
+  padding: 40px 48px 48px;
+}
+.dialogBody p {
+  max-width: 760px;
+}
+@media (max-width: 767px) {
+  .dialog > img {
+    height: auto;
+    max-height: none;
+    aspect-ratio: 4 / 3;
+  }
+  .dialogBody {
+    padding: 30px 25px;
+  }
+}

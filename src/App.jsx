@@ -19,6 +19,7 @@ import LanguageSwitcher from "./components/LanguageSwitcher";
 import Magnetic from "./components/Magnetic";
 import ProjectDialog from "./components/ProjectDialog";
 import ContactForm from "./components/ContactForm";
+import ProjectImage from "./components/ProjectImage";
 const Sculpture = lazy(() => import("./components/Sculpture"));
 gsap.registerPlugin(ScrollTrigger);
 export default function App() {
@@ -331,13 +332,7 @@ export default function App() {
                 data-reveal
               >
                 <div className={s.projectImage} data-image>
-                  <img
-                    src={`/art/${p.image}.svg`}
-                    alt={p.alt}
-                    width="1200"
-                    height={i === 0 || i === 3 ? "1400" : "1100"}
-                    loading="lazy"
-                  />
+                  <ProjectImage image={p.image} alt={p.alt} />
                   <span className={s.projectBadge}>
                     {t("project.view")}
                     <ArrowUpRight size={16} />
@@ -433,7 +428,11 @@ export default function App() {
                   id={`service-${i}`}
                   hidden={service !== i}
                 >
-                  <img src={`/art/${item.image}.svg`} alt="" loading="lazy" />
+                  <ProjectImage
+                    image={item.image}
+                    alt=""
+                    sizes="(max-width: 767px) 27vw, 24vw"
+                  />
                   <div>
                     <p>{item.text}</p>
                     <span className={s.eyebrow}>{item.tags}</span>

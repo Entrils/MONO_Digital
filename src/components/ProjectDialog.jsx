@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { X, ArrowUpRight } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 import s from "../App.module.css";
+import ProjectImage from "./ProjectImage";
 export default function ProjectDialog({ project, onClose }) {
   const { t } = useLanguage();
   const ref = useRef();
@@ -30,9 +31,10 @@ export default function ProjectDialog({ project, onClose }) {
       >
         <X />
       </button>
-      <img
-        src={`/art/${project.image}.svg`}
-        alt={t("project.visual", { name: project.name })}
+      <ProjectImage
+        image={project.image}
+        alt={project.alt}
+        sizes="(max-width: 1195px) 92vw, 1100px"
       />
       <div className={s.dialogBody}>
         <span className={s.eyebrow}>
