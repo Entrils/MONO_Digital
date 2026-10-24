@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ArrowDown,
@@ -7,7 +7,6 @@ import {
   Minus,
   X,
   Menu,
-  MoveUpRight,
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -16,11 +15,9 @@ import s from "./App.module.css";
 import { getProjects, getServices } from "./data";
 import { useLanguage } from "./i18n/LanguageContext";
 import LanguageSwitcher from "./components/LanguageSwitcher";
-import Magnetic from "./components/Magnetic";
 import ProjectDialog from "./components/ProjectDialog";
 import ContactForm from "./components/ContactForm";
 import ProjectImage from "./components/ProjectImage";
-const Sculpture = lazy(() => import("./components/Sculpture"));
 gsap.registerPlugin(ScrollTrigger);
 export default function App() {
   const { language, t } = useLanguage();
@@ -28,31 +25,15 @@ export default function App() {
   const services = getServices(language);
   const navigation = ["work", "studio", "services", "contact"];
   const root = useRef();
-  const cursor = useRef();
   const [menu, setMenu] = useState(false);
   const [project, setProject] = useState(null);
   const [service, setService] = useState(0);
   const [form, setForm] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [reduced] = useState(
     () => matchMedia("(prefers-reduced-motion:reduce)").matches,
   );
   const menuButton = useRef();
   useEffect(() => {
-    let frame;
-    const start = performance.now();
-    const tick = (now) => {
-      const p = Math.min(100, Math.round((now - start) / 7));
-      setProgress(p);
-      if (p < 100) frame = requestAnimationFrame(tick);
-      else setLoading(false);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, []);
-  useEffect(() => {
-    if (loading) return;
     const ctx = gsap.context(() => {
       if (reduced) return;
       gsap.from("[data-hero]", {
@@ -63,9 +44,9 @@ export default function App() {
       });
       gsap.utils.toArray("[data-reveal]").forEach((el) =>
         gsap.from(el, {
-          y: 50,
+          y: 18,
           opacity: 0,
-          duration: 0.9,
+          duration: 0.65,
           ease: "power3.out",
           scrollTrigger: { trigger: el, start: "top 91%", once: true },
         }),
@@ -79,26 +60,6 @@ export default function App() {
           scrollTrigger: { trigger: el, start: "top 90%", once: true },
         }),
       );
-      gsap.to("[data-parallax]", {
-        yPercent: 18,
-        ease: "none",
-        scrollTrigger: {
-          trigger: "[data-parallax]",
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
-      gsap.to("[data-experiment]", {
-        scale: 1.09,
-        rotation: -2,
-        scrollTrigger: {
-          trigger: "#experiment",
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
     }, root);
     let lenis;
     if (!reduced) {
@@ -115,20 +76,7 @@ export default function App() {
       lenis?.destroy();
       delete window.__monoLenis;
     };
-  }, [loading, reduced]);
-  useEffect(() => {
-    const move = (e) => {
-      if (cursor.current) {
-        cursor.current.style.left = `${e.clientX}px`;
-        cursor.current.style.top = `${e.clientY}px`;
-        cursor.current.dataset.active = Boolean(
-          e.target.closest("a,button"),
-        ).toString();
-      }
-    };
-    window.addEventListener("pointermove", move);
-    return () => window.removeEventListener("pointermove", move);
-  }, []);
+  }, [reduced]);
   useEffect(() => {
     if (!menu) return;
     window.__monoLenis?.stop();
@@ -177,19 +125,6 @@ export default function App() {
       <a className={s.skip} href="#main">
         {t("skip")}
       </a>
-      <div className={s.cursor} ref={cursor} aria-hidden="true" />
-      {loading && (
-        <div className={s.preloader} aria-hidden="true">
-          <span>
-            MONO<sup>®</sup>
-          </span>
-          <div className={s.loadBottom}>
-            <p>{t("loading")}</p>
-            <strong>{progress.toString().padStart(3, "0")}%</strong>
-          </div>
-          <i style={{ width: `${progress}%` }} />
-        </div>
-      )}
       <header className={s.header}>
         <a href="#" className={s.logo} aria-label={t("home")}>
           MONO<sup>®</sup>
@@ -232,41 +167,14 @@ export default function App() {
       )}
       <main id="main">
         <section className={s.hero}>
-          <div className={s.heroMeta}>
-            <span>
-              {t("hero.meta1")}
-              <br />
-              {t("hero.meta2")}
-            </span>
-            <span>
-              {t("hero.discipline")}
-              <br />
-              {t("hero.availability")}
-              <i />
-            </span>
-          </div>
-          <div className={s.sculpture} data-parallax>
-            <Suspense fallback={<div className={s.fallback}>✳</div>}>
-              <Sculpture reduced={reduced} />
-            </Suspense>
-          </div>
+          <p className={s.heroIntro}>{t("caption")}</p>
           <h1 className={s.heroTitle}>
             <span>
               <b data-hero>{t("hero.line1")}</b>
             </span>
             <span>
-              <b data-hero>{t("hero.line2")}</b>
-              <small>
-                {t("hero.strategy")}
-                <br />
-                {t("hero.design")}
-                <br />
-                {t("hero.rebel")}
-              </small>
-            </span>
-            <span className={s.lastLine}>
               <b data-hero>
-                {t("hero.line3")} <em>{t("hero.accent")}</em>
+                <em>{t("hero.line2")}</em>
               </b>
             </span>
           </h1>
@@ -282,27 +190,11 @@ export default function App() {
               <br />
               {t("hero.description2")}
             </p>
-            <span className={s.edition}>© MONO STUDIO — 2026</span>
           </div>
-          <span className={s.heroCross} aria-hidden="true">
-            +
-          </span>
         </section>
-        <div className={s.marquee} aria-label={t("marquee.label")}>
-          <div aria-hidden="true">
-            {[0, 1, 2, 3].map((x) => (
-              <span key={x}>
-                {t("marquee.first")}
-                <i>↗</i>
-                {t("marquee.second")} <i>✳</i>{" "}
-              </span>
-            ))}
-          </div>
-        </div>
         <section id="work" className={s.work}>
           <div className={s.sectionTop} data-reveal>
             <span className={s.eyebrow}>{t("work.kicker")}</span>
-            <span className={s.eyebrow}>2024 — 2026</span>
           </div>
           <div className={s.workHeading} data-reveal>
             <h2>
@@ -311,13 +203,7 @@ export default function App() {
               <span>{t("work.line2")}</span>
               <sup>(04)</sup>
             </h2>
-            <p>
-              {t("work.note1")}
-              <br />
-              {t("work.note2")}
-              <br />
-              <span>{t("work.concepts")}</span>
-            </p>
+            <p>{t("work.concepts")}</p>
           </div>
           <div className={s.projectGrid}>
             {projects.map((p, i) => (
@@ -333,78 +219,34 @@ export default function App() {
               >
                 <div className={s.projectImage} data-image>
                   <ProjectImage image={p.image} alt={p.alt} />
-                  <span className={s.projectBadge}>
-                    {t("project.view")}
-                    <ArrowUpRight size={16} />
-                  </span>
-                  <span className={s.projectNumber}>0{i + 1}</span>
                 </div>
                 <div className={s.projectInfo}>
                   <h3>{p.name}</h3>
-                  <span>
-                    {p.type} / {p.year}
-                  </span>
+                  <span>{p.type}</span>
                   <ArrowUpRight />
                 </div>
               </button>
             ))}
           </div>
-          <div className={s.workFoot}>
-            <span>{t("work.footer")}</span>
-            <a href="#contact">
-              {t("work.next")}
-              <ArrowUpRight size={18} />
-            </a>
-          </div>
         </section>
         <section id="studio" className={s.studio}>
-          <div className={s.sectionTop}>
-            <span className={s.eyebrow}>{t("studio.kicker")}</span>
-            <span className={s.eyebrow}>{t("studio.note")}</span>
-          </div>
-          <h2 data-reveal>
-            {t("studio.line1")}
-            <br />
-            {t("studio.line2")}
-            <br />
-            <span>{t("studio.line3")}</span>
-            <br />
-            {t("studio.line4")}
-            <span className={s.lime}>.</span>
-          </h2>
-          <div className={s.studioBottom}>
-            <div className={s.star} aria-hidden="true">
-              ✳
-            </div>
-            <div data-reveal>
-              <p className={s.studioLead}>
-                {t("studio.lead1")}
-                <br />
-                {t("studio.lead2")}
-              </p>
+          <span className={s.eyebrow}>{t("studio.kicker")}</span>
+          <div className={s.studioLayout} data-reveal>
+            <h2>{t("studio.title")}</h2>
+            <div className={s.studioCopy}>
               <p>{t("studio.paragraph1")}</p>
               <p>{t("studio.paragraph2")}</p>
               <a className={s.textLink} href="#services">
-                {t("studio.capabilities")}
-                <ArrowUpRight size={18} />
+                {t("studio.capabilities")} <ArrowUpRight size={18} />
               </a>
             </div>
-            <span className={s.studioNote}>
-              {t("studio.small")}
-              <br />
-              {t("studio.boundless")}
-            </span>
           </div>
         </section>
         <section id="services" className={s.services}>
           <div className={s.sectionTop}>
             <span className={s.eyebrow}>{t("services.kicker")}</span>
-            <span className={s.eyebrow}>{t("services.impact")}</span>
           </div>
-          <h2 data-reveal>
-            {t("services.title")}
-            <span className={s.lime}>↘</span>
-          </h2>
+          <h2 data-reveal>{t("services.title")}</h2>
           <div>
             {services.map((item, i) => (
               <div
@@ -415,9 +257,6 @@ export default function App() {
                   onClick={() => setService(service === i ? null : i)}
                   aria-expanded={service === i}
                   aria-controls={`service-${i}`}
-                  onMouseEnter={() => {
-                    if (matchMedia("(hover:hover)").matches) setService(i);
-                  }}
                 >
                   <span className={s.eyebrow}>0{i + 1}</span>
                   <h3>{item.name}</h3>
@@ -428,11 +267,6 @@ export default function App() {
                   id={`service-${i}`}
                   hidden={service !== i}
                 >
-                  <ProjectImage
-                    image={item.image}
-                    alt=""
-                    sizes="(max-width: 767px) 27vw, 24vw"
-                  />
                   <div>
                     <p>{item.text}</p>
                     <span className={s.eyebrow}>{item.tags}</span>
@@ -448,71 +282,14 @@ export default function App() {
             ))}
           </div>
         </section>
-        <section
-          id="experiment"
-          className={s.experiment}
-          onPointerMove={(e) => {
-            if (!reduced) {
-              const r = e.currentTarget.getBoundingClientRect();
-              e.currentTarget.style.setProperty(
-                "--mx",
-                `${(e.clientX - r.left - r.width / 2) * 0.035}px`,
-              );
-              e.currentTarget.style.setProperty(
-                "--my",
-                `${(e.clientY - r.top - r.height / 2) * 0.035}px`,
-              );
-            }
-          }}
-        >
-          <div className={s.sectionTop}>
-            <span className={s.eyebrow}>{t("experiment.kicker")}</span>
-            <span className={s.eyebrow}>{t("experiment.note")}</span>
-          </div>
-          <div className={s.experimentArt} aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </div>
-          <h2 data-experiment>
-            {t("experiment.line1")}
-            <br />
-            {t("experiment.line2")}
-            <br />
-            <span>{t("experiment.line3")}</span>
-          </h2>
-          <div className={s.experimentBottom}>
-            <span>
-              {t("experiment.mark")}
-              <br />
-              {t("experiment.feeling")}
-            </span>
-            <span className={s.experimentStar} aria-hidden="true">
-              ✳
-            </span>
-            <span>
-              {t("experiment.effect1")}
-              <br />
-              {t("experiment.effect2")}
-            </span>
-          </div>
-        </section>
         <section id="contact" className={s.contact}>
           <div className={s.sectionTop}>
             <span className={s.eyebrow}>{t("contact.kicker")}</span>
-            <span className={s.availability}>
-              <i />
-              {t("contact.available")}
-            </span>
           </div>
           <h2 data-reveal>
             {t("contact.line1")}
             <br />
             {t("contact.line2")}
-            <br />
-            <span>{t("contact.line3")}</span>
-            <br />
-            {t("contact.line4")}
           </h2>
           <div className={s.contactAction}>
             <p>
@@ -520,7 +297,7 @@ export default function App() {
               <br />
               {t("contact.note2")}
             </p>
-            <Magnetic
+            <button
               className={s.conversation}
               onClick={() => {
                 setForm(!form);
@@ -539,7 +316,7 @@ export default function App() {
             >
               {t(form ? "contact.close" : "contact.start")}
               {form ? <X /> : <ArrowUpRight size={28} />}
-            </Magnetic>
+            </button>
           </div>
           {form && (
             <div id="brief" className={s.brief}>
@@ -574,27 +351,15 @@ export default function App() {
             >
               GitHub <ArrowUpRight size={14} />
             </a>
-            <span className={s.conceptNote}>
-              {t("footer.concept1")}
-              <br />
-              {t("footer.concept2")}
-            </span>
           </div>
           <a href="#" className={s.backTop} aria-label={t("footer.back")}>
             <ArrowUp />
             <span>{t("footer.backText")}</span>
           </a>
         </div>
-        <a href="#" className={s.footerLogo} aria-label={t("footer.home")}>
-          MONO<sup>®</sup>
-          <MoveUpRight aria-hidden="true" />
-        </a>
         <div className={s.footerBottom}>
-          <span>© 2026 MONO® DIGITAL STUDIO</span>
-          <span>{t("footer.tagline")}</span>
-          <span>
-            {t("footer.time")} <Clock />
-          </span>
+          <span>© 2026 MONO®</span>
+          <span>{t("footer.concept1")}</span>
         </div>
       </footer>
       {project && (
@@ -605,28 +370,4 @@ export default function App() {
       )}
     </div>
   );
-}
-function Clock() {
-  const [time, setTime] = useState(() =>
-    new Date().toLocaleTimeString("en-GB", {
-      timeZone: "UTC",
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-  );
-  useEffect(() => {
-    const id = setInterval(
-      () =>
-        setTime(
-          new Date().toLocaleTimeString("en-GB", {
-            timeZone: "UTC",
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        ),
-      60000,
-    );
-    return () => clearInterval(id);
-  }, []);
-  return <>{time} UTC</>;
 }

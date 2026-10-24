@@ -1784,3 +1784,275 @@
     padding: 30px 25px;
   }
 }
+
+/* A quieter editorial hierarchy: work first, supporting copy second. */
+.app .hero {
+  height: auto;
+  min-height: 650px;
+  max-height: none;
+  padding: 165px 6% 70px;
+  justify-content: flex-start;
+}
+.heroIntro {
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 50px;
+}
+.app .heroTitle,
+.app.russian .heroTitle {
+  margin: 0;
+  font-size: clamp(42px, 7.5vw, 116px);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  pointer-events: auto;
+}
+.app .heroTitle > span:nth-child(2) {
+  font-size: inherit;
+}
+.heroTitle em {
+  color: var(--paper);
+}
+.app .heroBottom {
+  margin-top: 50px;
+  align-items: center;
+}
+.app .heroBottom p {
+  margin-left: 0;
+  font-size: 14px;
+  max-width: none;
+  line-height: 1.8;
+  color: #aaa;
+}
+.app .scroll {
+  font-size: 10px;
+  color: var(--lime);
+}
+.app .scroll > span {
+  border: none;
+  width: 24px;
+}
+.app .work {
+  padding: 90px 6%;
+}
+.app .workHeading {
+  margin: 35px 0 55px;
+  align-items: center;
+  gap: 40px;
+}
+.app .workHeading h2 {
+  font-size: clamp(36px, 4.3vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+.app .workHeading h2 br {
+  display: none;
+}
+.app .workHeading h2 > span {
+  margin-left: 0.22em;
+}
+.app .workHeading sup {
+  font-size: 10px;
+  top: 0;
+  margin-left: 12px;
+}
+.app .workHeading p {
+  max-width: 280px;
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.8;
+}
+.app .projectGrid {
+  gap: 50px 32px;
+  grid-template-columns: 1fr 1fr;
+}
+.app .project {
+  margin: 0;
+  width: 100%;
+}
+.app .projectImage {
+  aspect-ratio: 4/3;
+}
+.app .projectImage img {
+  transition: transform 0.65s ease;
+}
+.app .project:hover img {
+  transform: scale(1.025);
+}
+.app .projectInfo h3 {
+  font-size: 22px;
+}
+.app .projectInfo span {
+  font-size: 10px;
+}
+.app .studio {
+  padding: 95px 6%;
+}
+.studioLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9%;
+  margin-top: 40px;
+}
+.app .studio h2 {
+  margin: 0;
+  font-size: clamp(32px, 3.7vw, 58px);
+  line-height: 1.15;
+  letter-spacing: -0.045em;
+  max-width: 520px;
+}
+.studioCopy p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #b5b5b0;
+  margin-bottom: 20px;
+  max-width: 540px;
+}
+.app .services {
+  padding: 30px 6% 95px;
+}
+.app .services h2 {
+  font-size: clamp(32px, 3.5vw, 52px);
+  margin: 35px 0;
+  letter-spacing: -0.04em;
+}
+.app .service h3 {
+  font-size: clamp(22px, 2.4vw, 36px);
+}
+.app .service > button {
+  padding: 25px 0;
+}
+.app .serviceDetail {
+  grid-template-columns: 1fr 48px;
+  gap: 30px;
+  padding: 0 0 30px 7%;
+}
+.app .serviceDetail p {
+  max-width: 650px;
+  font-size: 14px;
+}
+.app .contact {
+  border-top: 1px solid #333;
+  padding: 80px 6%;
+}
+.app .contact h2 {
+  font-size: clamp(40px, 5.7vw, 88px);
+  line-height: 1.05;
+  margin: 40px 0;
+  letter-spacing: -0.05em;
+}
+.app .conversation {
+  background: var(--lime);
+  color: #101010;
+  border-color: var(--lime);
+  gap: 40px;
+  padding: 22px 28px;
+}
+.app .conversation:hover {
+  background: var(--paper);
+  border-color: var(--paper);
+}
+.app .footer {
+  padding: 40px 6% 25px;
+}
+.app .footerTop > p {
+  font-size: 14px;
+  color: #aaa;
+}
+.app .footerBottom {
+  margin-top: 40px;
+  font-size: 9px;
+}
+.dialogBody h4 {
+  font: 10px var(--mono);
+  color: #888;
+  font-weight: 400;
+  margin: 28px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+@media (max-width: 767px) {
+  .app .hero {
+    padding: 130px 6% 55px;
+    min-height: 490px;
+  }
+  .heroIntro {
+    font-size: 12px;
+    margin-bottom: 35px;
+  }
+  .app .heroTitle,
+  .app.russian .heroTitle {
+    font-size: clamp(30px, 7.8vw, 58px);
+  }
+  .app .heroBottom {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 25px;
+    margin-top: 30px;
+  }
+  .app .heroBottom p {
+    font-size: 12px;
+  }
+  .app .work {
+    padding: 55px 6%;
+  }
+  .app .workHeading {
+    display: block;
+    margin: 28px 0 35px;
+  }
+  .app .workHeading h2 {
+    font-size: 30px;
+  }
+  .app .workHeading p {
+    margin-top: 20px;
+    font-size: 12px;
+  }
+  .app .projectGrid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  .app .projectInfo span {
+    font-size: 9px;
+    margin-left: auto;
+    flex-basis: auto;
+  }
+  .app .studio {
+    padding: 60px 6%;
+  }
+  .studioLayout {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-top: 25px;
+  }
+  .app .studio h2 {
+    font-size: 32px;
+    max-width: 350px;
+  }
+  .studioCopy p {
+    font-size: 13px;
+  }
+  .app .services {
+    padding: 0 6% 60px;
+  }
+  .app .services h2 {
+    font-size: 30px;
+  }
+  .app .service h3 {
+    font-size: clamp(18px, 5vw, 27px);
+  }
+  .app .serviceDetail {
+    grid-template-columns: 1fr;
+    padding-left: 0;
+  }
+  .app .serviceDetail p {
+    font-size: 12px;
+  }
+  .app .contact {
+    padding: 55px 6%;
+  }
+  .app .contact h2 {
+    font-size: 40px;
+    margin: 30px 0;
+  }
+}
