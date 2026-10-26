@@ -177,7 +177,7 @@ assert.equal(
   document.querySelector('meta[property="og:locale"]').content,
   "ru_RU",
 );
-assert.match(document.querySelector("h1").textContent, /МЫ ДЕЛАЕМ/);
+assert.match(document.querySelector("h1").textContent, /Айдентика/);
 assert.equal(ru().getAttribute("aria-pressed"), "true");
 assert.equal(window.localStorage.getItem(LANGUAGE_KEY), "ru");
 assert.equal(
