@@ -2,15 +2,20 @@ import { useRef, useEffect } from "react";
 import { X, ArrowUpRight } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 import s from "../App.module.css";
+import CaseStudy from "./CaseStudy";
 import ProjectImage from "./ProjectImage";
 export default function ProjectDialog({ project, onClose }) {
   const { t } = useLanguage();
   const ref = useRef();
+  const returnFocus = useRef(document.activeElement);
   useEffect(() => {
     ref.current.showModal();
     const lenis = window.__monoLenis;
     lenis?.stop();
-    return () => lenis?.start();
+    return () => {
+      lenis?.start();
+      returnFocus.current?.focus();
+    };
   }, []);
   return (
     <dialog
@@ -50,6 +55,7 @@ export default function ProjectDialog({ project, onClose }) {
             <li key={item}>{item}</li>
           ))}
         </ul>
+        <CaseStudy image={project.image} />
         <button
           className={s.textLink}
           onClick={() => {
