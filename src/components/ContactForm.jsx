@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { getServices } from "../data";
 import { useLanguage } from "../i18n/LanguageContext";
+import { studio } from "../studio";
 import s from "../App.module.css";
 
 function validationMessage(field, t) {
@@ -39,6 +40,18 @@ export default function ContactForm() {
         field.setCustomValidity(validationMessage(field, t));
     }
   }, [t]);
+  const emailDraft = () => {
+    const fields = ref.current.elements;
+    const body = [
+      `${t("form.name")}: ${fields.name.value}`,
+      `${t("form.email")}: ${fields.email.value}`,
+      `${t("form.type")}: ${fields.type.selectedOptions[0]?.textContent}`,
+      `${t("form.budget")}: ${fields.budget.selectedOptions[0]?.textContent}`,
+      "",
+      fields.message.value,
+    ].join("\n");
+    return `mailto:${studio.email}?subject=${encodeURIComponent(`MONO — ${fields.name.value}`)}&body=${encodeURIComponent(body)}`;
+  };
   return (
     <form
       ref={ref}
@@ -131,6 +144,17 @@ export default function ContactForm() {
       <p className={s.status} role="status">
         {submitted ? t("form.success") : ""}
       </p>
+      {submitted && (
+        <div className={s.draftActions}>
+          <a className={s.submit} href={emailDraft()}>
+            {t("form.emailAction")} <ArrowUpRight size={18} />
+          </a>
+          <p>
+            {t("form.emailHelp")}{" "}
+            <a href={`mailto:${studio.email}`}>{studio.email}</a>
+          </p>
+        </div>
+      )}
     </form>
   );
 }
