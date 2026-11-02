@@ -25,8 +25,8 @@ export const messages = {
     "hero.design": "DESIGN.",
     "hero.rebel": "A LITTLE DISOBEDIENCE.",
     "hero.scroll": "EXPLORE THE WORK",
-    "hero.description1": "Branding, websites and art direction.",
-    "hero.description2": "From the first idea to the final interface.",
+    "hero.description1": "For cultural projects and object-led brands.",
+    "hero.description2": "Identity, editorial design and considered websites.",
     "marquee.label": "Design is not decoration. Design is an experience.",
     "marquee.first": "DESIGN IS NOT DECORATION",
     "marquee.second": "DESIGN IS AN EXPERIENCE",
@@ -50,7 +50,7 @@ export const messages = {
     "studio.lead1": "Good enough is a starting point.",
     "studio.lead2": "Different is the destination.",
     "studio.paragraph1":
-      "A clear brief comes before a visual direction: what needs to change, who the work is for and where it will be used. Those decisions guide the identity, the website and the content.",
+      "MONO focuses on cultural projects and object-led brands: publishers, exhibitions, furniture and homeware. The work connects visual identity, editorial content and the website into one recognisable system.",
     "studio.paragraph2":
       "The approach is straightforward: define the problem, compare design directions, then refine the chosen system. Typography, imagery and interaction should work together, with a clear reason for each decision.",
     "studio.capabilities": "OUR SERVICES",
@@ -75,8 +75,9 @@ export const messages = {
     "contact.line2": "your project.",
     "contact.line3": "IMPOSSIBLE",
     "contact.line4": "TO IGNORE.",
-    "contact.note1": "What are you making, and who is it for?",
-    "contact.note2": "A short outline is a good place to start.",
+    "contact.note1": "Share your brief by email or Telegram.",
+    "contact.note2":
+      "The form prepares an email draft; you review and send it yourself.",
     "contact.close": "CLOSE THE BRIEF",
     "contact.start": "WRITE A BRIEF",
     "footer.line1": "Independent digital studio.",
@@ -110,10 +111,10 @@ export const messages = {
     "form.message": "Message",
     "form.messagePlaceholder":
       "What do you need, who is it for, and when would you like to launch?",
-    "form.demo": "DEMO FORM — NO DATA IS SENT OR STORED.",
-    "form.submit": "REVIEW MY BRIEF",
+    "form.demo": "YOUR BRIEF IS PREPARED LOCALLY. NO AUTOMATIC SENDING.",
+    "form.submit": "PREPARE EMAIL",
     "form.success":
-      "Your brief is ready. This is a demo — nothing has been sent or stored. You can copy it into your email to a studio of your choice.",
+      "Your brief is ready — nothing has been sent or stored. Open the email draft below, review it and send it from your email app.",
     "validation.required": "Please fill out this field.",
     "validation.email": "Please enter a valid email address.",
     "validation.short": "Please enter at least {min} characters.",
@@ -127,6 +128,16 @@ export const messages = {
     "project.brief": "The brief",
     "project.direction": "Design direction",
     "project.scope": "Proposed scope",
+    "team.title": "People & roles",
+    "team.note":
+      "Proposed team structure. These names are fictional and do not identify verified studio members.",
+    "studio.location": "Moscow · In-person and remote collaboration",
+    "form.emailAction": "OPEN EMAIL DRAFT",
+    "form.emailHelp": "If your email app does not open, write directly to",
+    "project.summary.aether": "An identity system for independent publishing.",
+    "project.summary.form": "Art direction for a furniture collection.",
+    "project.summary.nova": "A spatial identity for electronic arts.",
+    "project.summary.objects": "A catalogue interface for everyday objects.",
   },
   ru: {
     skip: "Перейти к содержимому",
@@ -154,8 +165,8 @@ export const messages = {
     "hero.design": "ДИЗАЙН.",
     "hero.rebel": "НЕМНОГО НЕПОКОРНОСТИ.",
     "hero.scroll": "СМОТРЕТЬ ПРОЕКТЫ",
-    "hero.description1": "Брендинг, веб-дизайн и арт-дирекшн.",
-    "hero.description2": "От первой идеи до готового интерфейса.",
+    "hero.description1": "Для культурных проектов и предметных брендов.",
+    "hero.description2": "Айдентика, редакционный дизайн и продуманные сайты.",
     "marquee.label": "Дизайн — не украшение. Дизайн — это опыт.",
     "marquee.first": "ДИЗАЙН — НЕ УКРАШЕНИЕ",
     "marquee.second": "ДИЗАЙН — ЭТО ОПЫТ",
@@ -179,7 +190,7 @@ export const messages = {
     "studio.lead1": "«Достаточно хорошо» — только начало.",
     "studio.lead2": "Наша цель — по-другому.",
     "studio.paragraph1":
-      "До выбора визуального направления нужен понятный бриф: что должно измениться, для кого создаётся проект и где он будет использоваться. Эти ответы определяют айдентику, структуру сайта и содержание.",
+      "MONO фокусируется на культурных проектах и предметных брендах: издательствах, выставках, мебели и товарах для дома. Айдентика, редакционный контент и сайт складываются в одну узнаваемую систему.",
     "studio.paragraph2":
       "Подход простой: сформулировать задачу, сравнить варианты и доработать выбранную систему. Типографика, изображения и взаимодействия должны работать вместе — у каждого решения должна быть причина.",
     "studio.capabilities": "НАШИ УСЛУГИ",
@@ -204,8 +215,9 @@ export const messages = {
     "contact.line2": "о проекте.",
     "contact.line3": "НЕВОЗМОЖНЫМ",
     "contact.line4": "НЕ ЗАМЕТИТЬ.",
-    "contact.note1": "Что вы создаёте и для кого?",
-    "contact.note2": "Для начала достаточно короткого описания.",
+    "contact.note1": "Расскажите о задаче в почте или Telegram.",
+    "contact.note2":
+      "Форма подготовит черновик письма — вы проверите и отправите его сами.",
     "contact.close": "ЗАКРЫТЬ БРИФ",
     "contact.start": "ЗАПОЛНИТЬ БРИФ",
     "footer.line1": "Независимая digital-студия.",
@@ -238,10 +250,10 @@ export const messages = {
     "form.discuss": "Обсудим вместе",
     "form.message": "Сообщение",
     "form.messagePlaceholder": "Что нужно сделать, для кого и к какому сроку?",
-    "form.demo": "ДЕМОФОРМА — ДАННЫЕ НЕ ОТПРАВЛЯЮТСЯ И НЕ СОХРАНЯЮТСЯ.",
-    "form.submit": "ПРОВЕРИТЬ БРИФ",
+    "form.demo": "БРИФ СОБИРАЕТСЯ ЛОКАЛЬНО. АВТООТПРАВКИ НЕТ.",
+    "form.submit": "ПОДГОТОВИТЬ ПИСЬМО",
     "form.success":
-      "Бриф готов. Это деморежим: данные не отправлены и не сохранены. Вы можете скопировать текст и отправить его выбранной студии самостоятельно.",
+      "Бриф готов: данные не отправлены и не сохранены. Откройте черновик ниже, проверьте его и отправьте из своей почты.",
     "validation.required": "Пожалуйста, заполните это поле.",
     "validation.email": "Введите корректный адрес электронной почты.",
     "validation.short": "Введите не менее {min} символов.",
@@ -255,5 +267,17 @@ export const messages = {
     "project.brief": "Задача концепта",
     "project.direction": "Дизайн-решение",
     "project.scope": "Направления работы",
+    "team.title": "Люди и роли",
+    "team.note":
+      "Концептуальный состав команды. Имена вымышлены и не обозначают подтверждённых участников студии.",
+    "studio.location": "Москва · Работа очно и удалённо",
+    "form.emailAction": "ОТКРЫТЬ ЧЕРНОВИК ПИСЬМА",
+    "form.emailHelp":
+      "Если почтовое приложение не открылось, напишите напрямую:",
+    "project.summary.aether": "Система айдентики независимого издательства.",
+    "project.summary.form": "Арт-дирекшн мебельной коллекции.",
+    "project.summary.nova":
+      "Пространственная айдентика электронного искусства.",
+    "project.summary.objects": "Интерфейс каталога предметов для дома.",
   },
 };

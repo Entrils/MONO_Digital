@@ -17,6 +17,8 @@ import { useLanguage } from "./i18n/LanguageContext";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import ProjectDialog from "./components/ProjectDialog";
 import ContactForm from "./components/ContactForm";
+import StudioDetails from "./components/StudioDetails";
+import { studio } from "./studio";
 import ProjectImage from "./components/ProjectImage";
 gsap.registerPlugin(ScrollTrigger);
 export default function App() {
@@ -129,10 +131,6 @@ export default function App() {
         <a href="#" className={s.logo} aria-label={t("home")}>
           MONO<sup>®</sup>
         </a>
-        <span className={s.navCaption}>
-          <i />
-          {t("caption")}
-        </span>
         <nav aria-label={t("navigation")}>
           {navigation.map((x) => (
             <a href={`#${x}`} key={x}>
@@ -206,10 +204,10 @@ export default function App() {
             <p>{t("work.concepts")}</p>
           </div>
           <div className={s.projectGrid}>
-            {projects.map((p, i) => (
+            {projects.map((p) => (
               <button
                 key={p.name}
-                className={`${s.project} ${s[`project${i}`]}`}
+                className={s.project}
                 onClick={() => setProject(p.image)}
                 aria-label={t("project.explore", {
                   name: p.name,
@@ -225,6 +223,9 @@ export default function App() {
                   <span>{p.type}</span>
                   <ArrowUpRight />
                 </div>
+                <p className={s.projectSummary}>
+                  {t(`project.summary.${p.image}`)}
+                </p>
               </button>
             ))}
           </div>
@@ -241,6 +242,7 @@ export default function App() {
               </a>
             </div>
           </div>
+          <StudioDetails />
         </section>
         <section id="services" className={s.services}>
           <div className={s.sectionTop}>
@@ -291,6 +293,14 @@ export default function App() {
             <br />
             {t("contact.line2")}
           </h2>
+          <div className={s.contactLinks}>
+            <a href={`mailto:${studio.email}`}>
+              {studio.email} <ArrowUpRight size={18} />
+            </a>
+            <a href={studio.telegram} target="_blank" rel="noreferrer">
+              {studio.handle} <ArrowUpRight size={18} />
+            </a>
+          </div>
           <div className={s.contactAction}>
             <p>
               {t("contact.note1")}
