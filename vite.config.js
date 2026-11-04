@@ -7,8 +7,8 @@ export default defineConfig({
       output: {
         onlyExplicitManualChunks: true,
         manualChunks(id) {
-          if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "react";
-          if (id.includes("node_modules/") && !/node_modules\/(gsap|lenis|lucide-react)\//.test(id)) return "three";
+          if (/node_modules\/(react|react-dom|scheduler)\//.test(id))
+            return "react";
         },
       },
     },
