@@ -16,17 +16,6 @@ await build({
   outfile: root + "/node_modules/.cache/mono-localization-qa.mjs",
   loader: { ".css": "empty" },
   packages: "external",
-  plugins: [
-    {
-      name: "scene-stub",
-      setup(b) {
-        b.onLoad({ filter: /Sculpture.jsx$/ }, () => ({
-          contents: "export default function Sculpture(){return null}",
-          loader: "jsx",
-        }));
-      },
-    },
-  ],
 });
 const dom = new JSDOM(
   '<!doctype html><html lang="en"><head></head><body><div id="root"></div></body></html>',
@@ -205,6 +194,11 @@ assert.match(
   form.querySelector('[role="status"]').textContent,
   /данные не отправлены/,
 );
+const draft = form.querySelector('a[href^="mailto:"]');
+assert.ok(draft);
+assert.match(draft.href, /^mailto:mono_art_design@gmail.com\?/);
+assert.match(decodeURIComponent(draft.href), /Александр/);
+assert.match(decodeURIComponent(draft.href), /alex@example.com/);
 await change("en");
 assert.match(
   form.querySelector('[role="status"]').textContent,
@@ -259,6 +253,24 @@ assert.match(dialog.textContent, /Стратегия бренда/);
 document.querySelector('[aria-label="Закрыть проект"]').click();
 await flush();
 assert.equal(document.querySelector("dialog"), null);
+document.querySelector('[aria-label^="Открыть OBJECTS"]').click();
+await flush();
+const catalogue = document.querySelector('dialog [role="group"]');
+assert.ok(catalogue);
+[...catalogue.querySelectorAll("button")]
+  .find((button) => button.textContent === "Стекло")
+  .click();
+await flush();
+assert.match(document.querySelector("dialog").textContent, /Ваза Amber/);
+assert.ok(!document.querySelector("dialog").textContent.includes("Лампа Dome"));
+const item = [...document.querySelectorAll("dialog button")].find((button) =>
+  button.textContent.includes("Ваза Amber"),
+);
+item.click();
+await flush();
+assert.equal(item.getAttribute("aria-expanded"), "true");
+document.querySelector('[aria-label="Закрыть проект"]').click();
+await flush();
 renderer.unmount();
 await flush();
 h("/?campaign=reload");
@@ -302,6 +314,6 @@ renderer.unmount();
 window.Storage.prototype.getItem = getItem;
 window.Storage.prototype.setItem = setItem;
 console.log(
-  "PASS: EN/RU dictionary parity, URL/storage/browser priority, unsupported locales, translated metadata/content/case modal/validation, state-preserving form switch, accessible language controls, mobile focus/Escape, reload persistence, blocked storage. 3D and browser layout not tested.",
+  "PASS: EN/RU dictionary parity, URL/storage/browser priority, unsupported locales, translated metadata/content/case modal/validation, state-preserving form switch, accessible language controls, mobile focus/Escape, reload persistence, blocked storage, email draft recipient/body, catalogue filtering and item details. Browser layout not tested.",
 );
 process.exit(0);
