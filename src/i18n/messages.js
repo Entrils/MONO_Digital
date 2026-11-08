@@ -150,6 +150,9 @@ export const messages = {
       "Short studies of composition, materials and spatial identity.",
     "seo.imageAlt":
       "Cobalt AETHER publication and printed identity materials on a steel table",
+    "form.optional": "Optional",
+    "form.currency": "Budget currency",
+    "form.notSpecified": "Not specified",
   },
   ru: {
     skip: "Перейти к содержимому",
@@ -303,5 +306,8 @@ export const messages = {
       "Короткие исследования композиции, материалов и пространственной айдентики.",
     "seo.imageAlt":
       "Кобальтовое издание AETHER и печатные носители айдентики на стальном столе",
+    "form.optional": "Необязательно",
+    "form.currency": "Валюта бюджета",
+    "form.notSpecified": "Не указан",
   },
 };

@@ -14,7 +14,7 @@ function validationMessage(field, t) {
   return "";
 }
 
-const budgets = [
+const usdBudgets = [
   { value: "5000-10000", min: 5000, max: 10000 },
   { value: "10000-20000", min: 10000, max: 20000 },
   { value: "20000-50000", min: 20000, max: 50000 },
@@ -25,6 +25,9 @@ export default function ContactForm() {
   const { language, t } = useLanguage();
   const services = getServices(language);
   const [submitted, setSubmitted] = useState(false);
+  const [currencyCode, setCurrencyCode] = useState(() =>
+    language === "ru" ? "RUB" : "USD",
+  );
   const ref = useRef();
   const copyFallback = useRef();
   const [copyState, setCopyState] = useState("");
@@ -33,15 +36,24 @@ export default function ContactForm() {
       copyFallback.current?.focus();
       copyFallback.current?.select();
     }
-  }, [copyState]);
+  }, [copyState, language]);
   const currency = new Intl.NumberFormat(
     language === "ru" ? "ru-RU" : "en-US",
     {
       style: "currency",
-      currency: "USD",
+      currency: currencyCode,
       maximumFractionDigits: 0,
     },
   );
+  const budgets =
+    currencyCode === "USD"
+      ? usdBudgets
+      : [
+          { value: "300000-600000", min: 300000, max: 600000 },
+          { value: "600000-1200000", min: 600000, max: 1200000 },
+          { value: "1200000-3000000", min: 1200000, max: 3000000 },
+          { value: "3000000-plus", min: 3000000 },
+        ];
   useEffect(() => {
     for (const field of ref.current.elements) {
       if (field.validity?.customError)
@@ -54,7 +66,8 @@ export default function ContactForm() {
       `${t("form.name")}: ${fields.name.value}`,
       `${t("form.email")}: ${fields.email.value}`,
       `${t("form.type")}: ${fields.type.selectedOptions[0]?.textContent}`,
-      `${t("form.budget")}: ${fields.budget.selectedOptions[0]?.textContent}`,
+      `${t("form.budget")}: ${fields.budget.value ? fields.budget.selectedOptions[0]?.textContent : t("form.notSpecified")}`,
+      `${t("form.currency")}: ${currencyCode}`,
       "",
       fields.message.value,
     ].join("\n");
@@ -130,11 +143,9 @@ export default function ContactForm() {
         </select>
       </label>
       <label>
-        {t("form.budget")}
-        <select name="budget" required defaultValue="">
-          <option value="" disabled>
-            {t("form.budgetPlaceholder")}
-          </option>
+        {t("form.budget")} ({t("form.optional")})
+        <select name="budget" defaultValue="">
+          <option value="">{t("form.notSpecified")}</option>
           {budgets.map(({ value, min, max }) => (
             <option key={value} value={value}>
               {currency.format(min)}
@@ -142,6 +153,22 @@ export default function ContactForm() {
             </option>
           ))}
           <option value="discuss">{t("form.discuss")}</option>
+        </select>
+      </label>
+      <label>
+        {t("form.currency")}
+        <select
+          name="currency"
+          value={currencyCode}
+          onChange={(event) => {
+            setCurrencyCode(event.target.value);
+            ref.current.elements.budget.value = "";
+            setSubmitted(false);
+            setCopyState("");
+          }}
+        >
+          <option value="RUB">RUB — ₽</option>
+          <option value="USD">USD — $</option>
         </select>
       </label>
       <label className={s.message}>
