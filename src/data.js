@@ -28,7 +28,7 @@ export const projects = [
   },
   {
     name: "NOVA",
-    type: "Interactive Experience",
+    type: "Spatial Identity Study",
     year: "2025",
     image: "nova",
     alt: "Monumental red and cobalt light installation inside an industrial exhibition hall",
