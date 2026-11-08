@@ -15,19 +15,19 @@ export default function CaseStudy({ image }) {
       id: "light",
       name: ru ? "Лампа Dome" : "Dome lamp",
       material: ru ? "Эмаль · латунь" : "Enamel · brass",
-      position: "85% 25%",
+      asset: "objects-lamp",
     },
     {
       id: "glass",
       name: ru ? "Ваза Amber" : "Amber vessel",
       material: ru ? "Выдувное стекло" : "Blown glass",
-      position: "15% 45%",
+      asset: "objects-vase",
     },
     {
       id: "ceramic",
       name: ru ? "Чашки Form" : "Form cups",
       material: ru ? "Глазурованная керамика" : "Glazed ceramic",
-      position: "55% 65%",
+      asset: "objects-cups",
     },
   ];
   return (
@@ -67,7 +67,7 @@ export default function CaseStudy({ image }) {
       </div>
       {aether ? (
         <>
-          <div className={s.identity}>
+          <div className={s.identity} lang="en">
             <div className={s.mark}>
               <i />
               <strong>AETHER</strong>
@@ -87,7 +87,7 @@ export default function CaseStudy({ image }) {
               </small>
             </div>
           </div>
-          <div className={s.palette}>
+          <div className={s.palette} lang="en">
             {[
               ["#183DCB", "Cobalt"],
               ["#EEECE3", "Paper"],
@@ -129,11 +129,11 @@ export default function CaseStudy({ image }) {
             </div>
             <div>
               <ProjectImage
-                image="aether"
+                image="aether-editorial"
                 alt={
                   ru
-                    ? "Применение айдентики на печатных носителях"
-                    : "Identity applied to printed matter"
+                    ? "Разворот издания AETHER с архитектурной фотографией и кобальтовой графикой"
+                    : "AETHER editorial spread with architectural photography and cobalt graphics"
                 }
                 sizes="50vw"
               />
@@ -235,9 +235,11 @@ export default function CaseStudy({ image }) {
                   >
                     <div>
                       <ProjectImage
-                        image="objects"
+                        image={item.asset}
                         alt={item.name}
-                        style={{ transformOrigin: item.position }}
+                        widths={[480, 800, 1000]}
+                        width={1000}
+                        height={1250}
                         sizes="300px"
                       />
                     </div>

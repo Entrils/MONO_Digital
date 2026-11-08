@@ -2,13 +2,14 @@
 export default function ProjectImage({
   image,
   alt,
+  widths = [640, 1000, 1400],
   sizes = "(max-width: 767px) 88vw, 44vw",
   ...props
 }) {
   return (
     <img
-      src={`/art/${image}-1400.webp`}
-      srcSet={[640, 1000, 1400]
+      src={`/art/${image}-${widths.at(-1)}.webp`}
+      srcSet={widths
         .map((width) => `/art/${image}-${width}.webp ${width}w`)
         .join(", ")}
       sizes={sizes}
