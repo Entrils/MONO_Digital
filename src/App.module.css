@@ -972,3 +972,13 @@
   color: #666;
   margin-bottom: 20px;
 }
+.work a:focus-visible {
+  outline-color: #101010;
+}
+.form label > span {
+  font-size: 9px;
+  color: #999;
+}
+.brief[hidden] {
+  display: none;
+}

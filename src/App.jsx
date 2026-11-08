@@ -20,6 +20,7 @@ import ContactForm from "./components/ContactForm";
 import MobileMenu from "./components/MobileMenu";
 import StudioDetails from "./components/StudioDetails";
 import { studio } from "./studio";
+import { useProjectRoute } from "./hooks/useProjectRoute";
 import ProjectCard from "./components/ProjectCard";
 gsap.registerPlugin(ScrollTrigger);
 export default function App() {
@@ -29,7 +30,7 @@ export default function App() {
   const navigation = ["work", "studio", "services", "contact"];
   const root = useRef();
   const [menu, setMenu] = useState(false);
-  const [project, setProject] = useState(null);
+  const { project, openProject, closeProject } = useProjectRoute();
   const [service, setService] = useState(0);
   const [form, setForm] = useState(false);
   const [reduced] = useState(
@@ -163,7 +164,7 @@ export default function App() {
             {projects
               .filter((p) => ["aether", "objects"].includes(p.image))
               .map((p) => (
-                <ProjectCard key={p.image} project={p} onOpen={setProject} />
+                <ProjectCard key={p.image} project={p} onOpen={openProject} />
               ))}
           </div>
           <div className={s.studiesHeading}>
@@ -174,7 +175,7 @@ export default function App() {
             {projects
               .filter((p) => ["form", "nova"].includes(p.image))
               .map((p) => (
-                <ProjectCard key={p.image} project={p} onOpen={setProject} />
+                <ProjectCard key={p.image} project={p} onOpen={openProject} />
               ))}
           </div>
         </section>
@@ -196,7 +197,9 @@ export default function App() {
           <div className={s.sectionTop}>
             <span className={s.eyebrow}>{t("services.kicker")}</span>
           </div>
-          <h2 data-reveal>{t("services.title")}</h2>
+          <h2 data-reveal tabIndex={-1}>
+            {t("services.title")}
+          </h2>
           <div>
             {services.map((item, i) => (
               <div
@@ -236,7 +239,7 @@ export default function App() {
           <div className={s.sectionTop}>
             <span className={s.eyebrow}>{t("contact.kicker")}</span>
           </div>
-          <h2 data-reveal>
+          <h2 data-reveal tabIndex={-1}>
             {t("contact.line1")}
             <br />
             {t("contact.line2")}
@@ -276,11 +279,9 @@ export default function App() {
               {form ? <X /> : <ArrowUpRight size={28} />}
             </button>
           </div>
-          {form && (
-            <div id="brief" className={s.brief}>
-              <ContactForm />
-            </div>
-          )}
+          <div id="brief" className={s.brief} hidden={!form}>
+            <ContactForm />
+          </div>
         </section>
       </main>
       <footer className={s.footer} inert={menu}>
@@ -322,8 +323,10 @@ export default function App() {
       </footer>
       {project && (
         <ProjectDialog
+          key={project}
           project={projects.find((item) => item.image === project)}
-          onClose={() => setProject(null)}
+          onClose={() => closeProject()}
+          onContact={() => closeProject("contact")}
         />
       )}
     </div>

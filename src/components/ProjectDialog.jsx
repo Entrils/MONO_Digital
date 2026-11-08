@@ -4,17 +4,27 @@ import { useLanguage } from "../i18n/LanguageContext";
 import s from "../App.module.css";
 import CaseStudy from "./CaseStudy";
 import ProjectImage from "./ProjectImage";
-export default function ProjectDialog({ project, onClose }) {
+export default function ProjectDialog({ project, onClose, onContact }) {
   const { t } = useLanguage();
   const ref = useRef();
-  const returnFocus = useRef(document.activeElement);
+  const returnFocus = useRef(
+    document.activeElement === document.body
+      ? document.querySelector(`[data-project="${project.image}"]`)
+      : document.activeElement,
+  );
+  const restoreFocus = useRef(true);
   useEffect(() => {
     ref.current.showModal();
     const lenis = window.__monoLenis;
     lenis?.stop();
     return () => {
       lenis?.start();
-      returnFocus.current?.focus();
+      if (restoreFocus.current) {
+        const target = returnFocus.current?.isConnected
+          ? returnFocus.current
+          : document.querySelector(`[data-project="${project.image}"]`);
+        target?.focus({ preventScroll: true });
+      }
     };
   }, []);
   return (
@@ -59,10 +69,8 @@ export default function ProjectDialog({ project, onClose }) {
         <button
           className={s.textLink}
           onClick={() => {
-            onClose();
-            document
-              .getElementById("contact")
-              .scrollIntoView({ behavior: "instant" });
+            restoreFocus.current = false;
+            onContact();
           }}
         >
           {t("project.cta")}

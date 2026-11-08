@@ -1,13 +1,27 @@
 import { ArrowUpRight } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
+import { projectUrl } from "../hooks/useProjectRoute";
 import ProjectImage from "./ProjectImage";
 import s from "../App.module.css";
 export default function ProjectCard({ project, onOpen }) {
   const { t } = useLanguage();
   return (
-    <button
+    <a
       className={s.project}
-      onClick={() => onOpen(project.image)}
+      href={projectUrl(project.image).toString()}
+      data-project={project.image}
+      onClick={(event) => {
+        if (
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        )
+          return;
+        event.preventDefault();
+        onOpen(project.image);
+      }}
       aria-label={t("project.explore", {
         name: project.name,
         type: project.type,
@@ -25,6 +39,6 @@ export default function ProjectCard({ project, onOpen }) {
       <p className={s.projectSummary}>
         {t(`project.summary.${project.image}`)}
       </p>
-    </button>
+    </a>
   );
 }
