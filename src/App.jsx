@@ -17,9 +17,10 @@ import { useLanguage } from "./i18n/LanguageContext";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import ProjectDialog from "./components/ProjectDialog";
 import ContactForm from "./components/ContactForm";
+import MobileMenu from "./components/MobileMenu";
 import StudioDetails from "./components/StudioDetails";
 import { studio } from "./studio";
-import ProjectImage from "./components/ProjectImage";
+import ProjectCard from "./components/ProjectCard";
 gsap.registerPlugin(ScrollTrigger);
 export default function App() {
   const { language, t } = useLanguage();
@@ -80,54 +81,20 @@ export default function App() {
     };
   }, [reduced]);
   useEffect(() => {
-    if (!menu) return;
-    window.__monoLenis?.stop();
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const links = [...document.querySelectorAll("[data-menu] a")];
-    const languageButtons = [
-      ...document.querySelectorAll("[data-language-switcher] button"),
-    ];
-    links[0]?.focus();
-    const key = (e) => {
-      if (e.key === "Escape") {
-        setMenu(false);
-        menuButton.current.focus();
-      }
-      if (e.key === "Tab") {
-        const items = [menuButton.current, ...languageButtons, ...links];
-        const idx = items.indexOf(document.activeElement);
-        e.preventDefault();
-        items[
-          (idx + (e.shiftKey ? -1 : 1) + items.length) % items.length
-        ].focus();
-      }
-    };
-    document.addEventListener("keydown", key);
-    return () => {
-      document.body.style.overflow = prev;
-      window.__monoLenis?.start();
-      document.removeEventListener("keydown", key);
-    };
-  }, [menu]);
-  useEffect(() => {
     const refresh = () => ScrollTrigger.refresh();
     window.addEventListener("mono:language-change", refresh);
     return () => window.removeEventListener("mono:language-change", refresh);
   }, []);
-  const closeMenu = () => {
-    setMenu(false);
-    menuButton.current?.focus();
-  };
+  const closeMenu = () => setMenu(false);
   return (
     <div
       ref={root}
       className={`${s.app} ${language === "ru" ? s.russian : ""}`}
     >
-      <a className={s.skip} href="#main">
+      <a className={s.skip} href="#main" inert={menu}>
         {t("skip")}
       </a>
-      <header className={s.header}>
+      <header className={s.header} inert={menu}>
         <a href="#" className={s.logo} aria-label={t("home")}>
           MONO<sup>®</sup>
         </a>
@@ -150,20 +117,8 @@ export default function App() {
           {menu ? <X /> : <Menu />}
         </button>
       </header>
-      {menu && (
-        <div id="mobile-menu" className={s.mobileMenu} data-menu>
-          <span className={s.eyebrow}>{t("menu.kicker")}</span>
-          {navigation.map((x, i) => (
-            <a href={`#${x}`} onClick={closeMenu} key={x}>
-              <sup>0{i + 1}</sup>
-              {t(`nav.${x}`)}
-              <ArrowUpRight />
-            </a>
-          ))}
-          <p>{t("menu.note")}</p>
-        </div>
-      )}
-      <main id="main">
+      {menu && <MobileMenu onClose={closeMenu} triggerRef={menuButton} />}
+      <main id="main" inert={menu}>
         <section className={s.hero}>
           <p className={s.heroIntro}>{t("caption")}</p>
           <h1 className={s.heroTitle}>
@@ -199,35 +154,28 @@ export default function App() {
               {t("work.line1")}
               <br />
               <span>{t("work.line2")}</span>
-              <sup>(04)</sup>
+              <sup>(02)</sup>
             </h2>
             <p>{t("work.concepts")}</p>
           </div>
+          <p className={s.projectGroupLabel}>{t("work.featured")}</p>
           <div className={s.projectGrid}>
-            {projects.map((p) => (
-              <button
-                key={p.name}
-                className={s.project}
-                onClick={() => setProject(p.image)}
-                aria-label={t("project.explore", {
-                  name: p.name,
-                  type: p.type,
-                })}
-                data-reveal
-              >
-                <div className={s.projectImage} data-image>
-                  <ProjectImage image={p.image} alt={p.alt} />
-                </div>
-                <div className={s.projectInfo}>
-                  <h3>{p.name}</h3>
-                  <span>{p.type}</span>
-                  <ArrowUpRight />
-                </div>
-                <p className={s.projectSummary}>
-                  {t(`project.summary.${p.image}`)}
-                </p>
-              </button>
-            ))}
+            {projects
+              .filter((p) => ["aether", "objects"].includes(p.image))
+              .map((p) => (
+                <ProjectCard key={p.image} project={p} onOpen={setProject} />
+              ))}
+          </div>
+          <div className={s.studiesHeading}>
+            <h3>{t("work.studies")}</h3>
+            <p>{t("work.studiesNote")}</p>
+          </div>
+          <div className={s.projectGrid}>
+            {projects
+              .filter((p) => ["form", "nova"].includes(p.image))
+              .map((p) => (
+                <ProjectCard key={p.image} project={p} onOpen={setProject} />
+              ))}
           </div>
         </section>
         <section id="studio" className={s.studio}>
@@ -335,7 +283,7 @@ export default function App() {
           )}
         </section>
       </main>
-      <footer className={s.footer}>
+      <footer className={s.footer} inert={menu}>
         <div className={s.footerTop}>
           <p>
             {t("footer.line1")}

@@ -36,7 +36,7 @@ export const messages = {
     "work.note1": "A few different ways",
     "work.note2": "to make a difference.",
     "work.concepts":
-      "Four independent design studies. Each explores a different brief and visual direction.",
+      "Two developed concepts: an identity system and an interactive catalogue.",
     "project.view": "VIEW PROJECT",
     "project.explore": "Explore {name}, {type}",
     "work.footer": "DIFFERENT BRIEFS. SAME RESTLESS CURIOSITY.",
@@ -121,9 +121,9 @@ export const messages = {
     "language.label": "Website language",
     "language.announce": "Language changed to English.",
     "sculpture.label": "Slowly rotating interactive chrome knot",
-    "seo.title": "MONO® — Independent Digital Studio",
+    "seo.title": "MONO® — Branding & Web Design",
     "seo.description":
-      "MONO® is an independent digital studio exploring the intersection of identity, design and creative technology. We make digital feel different.",
+      "MONO® is an independent digital studio for cultural projects and object-led brands. Brand identity, editorial design and considered websites.",
     "studio.title": "Start with the problem. Design with purpose.",
     "project.brief": "The brief",
     "project.direction": "Design direction",
@@ -138,6 +138,18 @@ export const messages = {
     "project.summary.form": "Art direction for a furniture collection.",
     "project.summary.nova": "A spatial identity for electronic arts.",
     "project.summary.objects": "A catalogue interface for everyday objects.",
+    "form.copy": "Copy brief",
+    "form.download": "Download .txt",
+    "form.copied": "Brief copied to the clipboard.",
+    "form.manual":
+      "Automatic copying is unavailable. The text below is selected — copy it manually.",
+    "form.briefText": "Your brief",
+    "work.featured": "Selected case studies",
+    "work.studies": "Visual explorations",
+    "work.studiesNote":
+      "Short studies of composition, materials and spatial identity.",
+    "seo.imageAlt":
+      "Cobalt AETHER publication and printed identity materials on a steel table",
   },
   ru: {
     skip: "Перейти к содержимому",
@@ -176,7 +188,7 @@ export const messages = {
     "work.note1": "Разные подходы.",
     "work.note2": "Одна цель — выделяться.",
     "work.concepts":
-      "Четыре авторских концепта. В каждом — своя задача и визуальное направление.",
+      "Два подробных концепта: система айдентики и интерактивный каталог.",
     "project.view": "СМОТРЕТЬ ПРОЕКТ",
     "project.explore": "Открыть {name}: {type}",
     "work.footer": "РАЗНЫЕ ЗАДАЧИ. ОДНО НЕУЁМНОЕ ЛЮБОПЫТСТВО.",
@@ -260,9 +272,9 @@ export const messages = {
     "language.label": "Язык сайта",
     "language.announce": "Выбран русский язык.",
     "sculpture.label": "Интерактивный хромированный узел с медленным вращением",
-    "seo.title": "MONO® — Независимая digital-студия",
+    "seo.title": "MONO® — Айдентика и веб-дизайн",
     "seo.description":
-      "MONO® — независимая digital-студия. Брендинг, веб-дизайн, креативная разработка и арт-дирекшн. Создаём цифровой опыт с другим характером.",
+      "MONO® — независимая digital-студия для культурных проектов и предметных брендов. Айдентика, редакционный дизайн и продуманные сайты.",
     "studio.title": "Сначала задача. Затем дизайн.",
     "project.brief": "Задача концепта",
     "project.direction": "Дизайн-решение",
@@ -279,5 +291,17 @@ export const messages = {
     "project.summary.nova":
       "Пространственная айдентика электронного искусства.",
     "project.summary.objects": "Интерфейс каталога предметов для дома.",
+    "form.copy": "Скопировать бриф",
+    "form.download": "Скачать .txt",
+    "form.copied": "Бриф скопирован в буфер обмена.",
+    "form.manual":
+      "Автоматическое копирование недоступно. Текст ниже выделен — скопируйте его вручную.",
+    "form.briefText": "Ваш бриф",
+    "work.featured": "Основные кейсы",
+    "work.studies": "Визуальные исследования",
+    "work.studiesNote":
+      "Короткие исследования композиции, материалов и пространственной айдентики.",
+    "seo.imageAlt":
+      "Кобальтовое издание AETHER и печатные носители айдентики на стальном столе",
   },
 };
