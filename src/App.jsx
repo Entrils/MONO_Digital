@@ -13,13 +13,19 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import s from "./App.module.css";
-import { projects, services } from "./data";
+import { getProjects, getServices } from "./data";
+import { useLanguage } from "./i18n/LanguageContext";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import Magnetic from "./components/Magnetic";
 import ProjectDialog from "./components/ProjectDialog";
 import ContactForm from "./components/ContactForm";
 const Sculpture = lazy(() => import("./components/Sculpture"));
 gsap.registerPlugin(ScrollTrigger);
 export default function App() {
+  const { language, t } = useLanguage();
+  const projects = getProjects(language);
+  const services = getServices(language);
+  const navigation = ["work", "studio", "services", "contact"];
   const root = useRef();
   const cursor = useRef();
   const [menu, setMenu] = useState(false);
@@ -54,28 +60,24 @@ export default function App() {
         duration: 1.15,
         ease: "power4.out",
       });
-      gsap.utils
-        .toArray("[data-reveal]")
-        .forEach((el) =>
-          gsap.from(el, {
-            y: 50,
-            opacity: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 91%", once: true },
-          }),
-        );
-      gsap.utils
-        .toArray("[data-image]")
-        .forEach((el) =>
-          gsap.from(el, {
-            clipPath: "inset(18% 0 18% 0)",
-            scale: 0.94,
-            duration: 1.2,
-            ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 90%", once: true },
-          }),
-        );
+      gsap.utils.toArray("[data-reveal]").forEach((el) =>
+        gsap.from(el, {
+          y: 50,
+          opacity: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 91%", once: true },
+        }),
+      );
+      gsap.utils.toArray("[data-image]").forEach((el) =>
+        gsap.from(el, {
+          clipPath: "inset(18% 0 18% 0)",
+          scale: 0.94,
+          duration: 1.2,
+          ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 90%", once: true },
+        }),
+      );
       gsap.to("[data-parallax]", {
         yPercent: 18,
         ease: "none",
@@ -132,6 +134,9 @@ export default function App() {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const links = [...document.querySelectorAll("[data-menu] a")];
+    const languageButtons = [
+      ...document.querySelectorAll("[data-language-switcher] button"),
+    ];
     links[0]?.focus();
     const key = (e) => {
       if (e.key === "Escape") {
@@ -139,7 +144,7 @@ export default function App() {
         menuButton.current.focus();
       }
       if (e.key === "Tab") {
-        const items = [menuButton.current, ...links];
+        const items = [menuButton.current, ...languageButtons, ...links];
         const idx = items.indexOf(document.activeElement);
         e.preventDefault();
         items[
@@ -154,14 +159,22 @@ export default function App() {
       document.removeEventListener("keydown", key);
     };
   }, [menu]);
+  useEffect(() => {
+    const refresh = () => ScrollTrigger.refresh();
+    window.addEventListener("mono:language-change", refresh);
+    return () => window.removeEventListener("mono:language-change", refresh);
+  }, []);
   const closeMenu = () => {
     setMenu(false);
     menuButton.current?.focus();
   };
   return (
-    <div ref={root} className={s.app}>
+    <div
+      ref={root}
+      className={`${s.app} ${language === "ru" ? s.russian : ""}`}
+    >
       <a className={s.skip} href="#main">
-        Skip to content
+        {t("skip")}
       </a>
       <div className={s.cursor} ref={cursor} aria-hidden="true" />
       {loading && (
@@ -170,30 +183,32 @@ export default function App() {
             MONO<sup>®</sup>
           </span>
           <div className={s.loadBottom}>
-            <p>LOADING A DIFFERENT PERSPECTIVE</p>
+            <p>{t("loading")}</p>
             <strong>{progress.toString().padStart(3, "0")}%</strong>
           </div>
           <i style={{ width: `${progress}%` }} />
         </div>
       )}
       <header className={s.header}>
-        <a href="#" className={s.logo} aria-label="MONO home">
+        <a href="#" className={s.logo} aria-label={t("home")}>
           MONO<sup>®</sup>
         </a>
         <span className={s.navCaption}>
-          <i /> Independent Digital Studio
+          <i />
+          {t("caption")}
         </span>
-        <nav aria-label="Main navigation">
-          {["Work", "Studio", "Services", "Contact"].map((x) => (
-            <a href={`#${x.toLowerCase()}`} key={x}>
-              {x}
+        <nav aria-label={t("navigation")}>
+          {navigation.map((x) => (
+            <a href={`#${x}`} key={x}>
+              {t(`nav.${x}`)}
             </a>
           ))}
         </nav>
+        <LanguageSwitcher />
         <button
           ref={menuButton}
           className={s.menuToggle}
-          aria-label={menu ? "Close navigation" : "Open navigation"}
+          aria-label={t(menu ? "menu.close" : "menu.open")}
           aria-expanded={menu}
           aria-controls="mobile-menu"
           onClick={() => setMenu(!menu)}
@@ -203,29 +218,30 @@ export default function App() {
       </header>
       {menu && (
         <div id="mobile-menu" className={s.mobileMenu} data-menu>
-          <span className={s.eyebrow}>A DIFFERENT WAY IN</span>
-          {["Work", "Studio", "Services", "Contact"].map((x, i) => (
-            <a href={`#${x.toLowerCase()}`} onClick={closeMenu} key={x}>
+          <span className={s.eyebrow}>{t("menu.kicker")}</span>
+          {navigation.map((x, i) => (
+            <a href={`#${x}`} onClick={closeMenu} key={x}>
               <sup>0{i + 1}</sup>
-              {x}
+              {t(`nav.${x}`)}
               <ArrowUpRight />
             </a>
           ))}
-          <p>Independent minds. Unconventional outcomes.</p>
+          <p>{t("menu.note")}</p>
         </div>
       )}
       <main id="main">
         <section className={s.hero}>
           <div className={s.heroMeta}>
             <span>
-              INDEPENDENT MINDS.
+              {t("hero.meta1")}
               <br />
-              UNCONVENTIONAL OUTCOMES.
+              {t("hero.meta2")}
             </span>
             <span>
-              DESIGN × TECHNOLOGY
+              {t("hero.discipline")}
               <br />
-              AVAILABLE FOR THE UNEXPECTED <i />
+              {t("hero.availability")}
+              <i />
             </span>
           </div>
           <div className={s.sculpture} data-parallax>
@@ -235,20 +251,21 @@ export default function App() {
           </div>
           <h1 className={s.heroTitle}>
             <span>
-              <b data-hero>WE MAKE</b>
+              <b data-hero>{t("hero.line1")}</b>
             </span>
             <span>
-              <b data-hero>DIGITAL</b>
+              <b data-hero>{t("hero.line2")}</b>
               <small>
-                STRATEGY.
+                {t("hero.strategy")}
                 <br />
-                DESIGN.
-                <br />A LITTLE DISOBEDIENCE.
+                {t("hero.design")}
+                <br />
+                {t("hero.rebel")}
               </small>
             </span>
             <span className={s.lastLine}>
               <b data-hero>
-                FEEL <em>DIFFERENT.</em>
+                {t("hero.line3")} <em>{t("hero.accent")}</em>
               </b>
             </span>
           </h1>
@@ -257,12 +274,12 @@ export default function App() {
               <span>
                 <ArrowDown size={20} />
               </span>
-              SCROLL TO FEEL SOMETHING
+              {t("hero.scroll")}
             </a>
             <p>
-              We shape identities and digital experiences
+              {t("hero.description1")}
               <br />
-              for brands that refuse to blend in.
+              {t("hero.description2")}
             </p>
             <span className={s.edition}>© MONO STUDIO — 2026</span>
           </div>
@@ -270,37 +287,35 @@ export default function App() {
             +
           </span>
         </section>
-        <div
-          className={s.marquee}
-          aria-label="Design is not decoration. Design is an experience."
-        >
+        <div className={s.marquee} aria-label={t("marquee.label")}>
           <div aria-hidden="true">
             {[0, 1, 2, 3].map((x) => (
               <span key={x}>
-                DESIGN IS NOT DECORATION <i>↗</i> DESIGN IS AN EXPERIENCE{" "}
-                <i>✳</i>{" "}
+                {t("marquee.first")}
+                <i>↗</i>
+                {t("marquee.second")} <i>✳</i>{" "}
               </span>
             ))}
           </div>
         </div>
         <section id="work" className={s.work}>
           <div className={s.sectionTop} data-reveal>
-            <span className={s.eyebrow}>01 / SELECTED EXPLORATIONS</span>
+            <span className={s.eyebrow}>{t("work.kicker")}</span>
             <span className={s.eyebrow}>2024 — 2026</span>
           </div>
           <div className={s.workHeading} data-reveal>
             <h2>
-              SELECTED
+              {t("work.line1")}
               <br />
-              <span>WORK</span>
+              <span>{t("work.line2")}</span>
               <sup>(04)</sup>
             </h2>
             <p>
-              A few different ways
+              {t("work.note1")}
               <br />
-              to make a difference.
+              {t("work.note2")}
               <br />
-              <span>Self-initiated concept projects.</span>
+              <span>{t("work.concepts")}</span>
             </p>
           </div>
           <div className={s.projectGrid}>
@@ -308,27 +323,24 @@ export default function App() {
               <button
                 key={p.name}
                 className={`${s.project} ${s[`project${i}`]}`}
-                onClick={() => setProject(p)}
-                aria-label={`Explore ${p.name}, ${p.type}`}
+                onClick={() => setProject(p.image)}
+                aria-label={t("project.explore", {
+                  name: p.name,
+                  type: p.type,
+                })}
                 data-reveal
               >
                 <div className={s.projectImage} data-image>
                   <img
                     src={`/art/${p.image}.svg`}
-                    alt={
-                      [
-                        "Liquid metallic identity on lavender",
-                        "Sculptural terracotta object on a warm stone backdrop",
-                        "Orbital violet geometry on black",
-                        "Sage colored design object with a lime display",
-                      ][i]
-                    }
+                    alt={p.alt}
                     width="1200"
                     height={i === 0 || i === 3 ? "1400" : "1100"}
                     loading="lazy"
                   />
                   <span className={s.projectBadge}>
-                    VIEW PROJECT <ArrowUpRight size={16} />
+                    {t("project.view")}
+                    <ArrowUpRight size={16} />
                   </span>
                   <span className={s.projectNumber}>0{i + 1}</span>
                 </div>
@@ -343,25 +355,27 @@ export default function App() {
             ))}
           </div>
           <div className={s.workFoot}>
-            <span>DIFFERENT BRIEFS. SAME RESTLESS CURIOSITY.</span>
+            <span>{t("work.footer")}</span>
             <a href="#contact">
-              YOURS COULD BE NEXT <ArrowUpRight size={18} />
+              {t("work.next")}
+              <ArrowUpRight size={18} />
             </a>
           </div>
         </section>
         <section id="studio" className={s.studio}>
           <div className={s.sectionTop}>
-            <span className={s.eyebrow}>02 / THE STUDIO</span>
-            <span className={s.eyebrow}>NO DEFAULT SETTINGS.</span>
+            <span className={s.eyebrow}>{t("studio.kicker")}</span>
+            <span className={s.eyebrow}>{t("studio.note")}</span>
           </div>
           <h2 data-reveal>
-            WE DON’T
+            {t("studio.line1")}
             <br />
-            FOLLOW THE
+            {t("studio.line2")}
             <br />
-            <span>FUTURE.</span>
+            <span>{t("studio.line3")}</span>
             <br />
-            WE DESIGN IT<span className={s.lime}>.</span>
+            {t("studio.line4")}
+            <span className={s.lime}>.</span>
           </h2>
           <div className={s.studioBottom}>
             <div className={s.star} aria-hidden="true">
@@ -369,44 +383,37 @@ export default function App() {
             </div>
             <div data-reveal>
               <p className={s.studioLead}>
-                Good enough is a starting point.
+                {t("studio.lead1")}
                 <br />
-                Different is the destination.
+                {t("studio.lead2")}
               </p>
-              <p>
-                MONO is an independent digital studio working at the
-                intersection of brand, design and technology. We turn complex
-                ideas into clear, distinctive experiences — with equal parts
-                precision and instinct.
-              </p>
-              <p>
-                We believe the best work happens when curious minds ask better
-                questions. Less noise. More intention. And always, something you
-                haven’t felt before.
-              </p>
+              <p>{t("studio.paragraph1")}</p>
+              <p>{t("studio.paragraph2")}</p>
               <a className={s.textLink} href="#services">
-                MEET OUR CAPABILITIES <ArrowUpRight size={18} />
+                {t("studio.capabilities")}
+                <ArrowUpRight size={18} />
               </a>
             </div>
             <span className={s.studioNote}>
-              SMALL BY DESIGN.
+              {t("studio.small")}
               <br />
-              BOUNDLESS BY NATURE.
+              {t("studio.boundless")}
             </span>
           </div>
         </section>
         <section id="services" className={s.services}>
           <div className={s.sectionTop}>
-            <span className={s.eyebrow}>03 / OUR CAPABILITIES</span>
-            <span className={s.eyebrow}>IDEA → IMPACT</span>
+            <span className={s.eyebrow}>{t("services.kicker")}</span>
+            <span className={s.eyebrow}>{t("services.impact")}</span>
           </div>
           <h2 data-reveal>
-            WHAT WE DO<span className={s.lime}>↘</span>
+            {t("services.title")}
+            <span className={s.lime}>↘</span>
           </h2>
           <div>
             {services.map((item, i) => (
               <div
-                key={item.name}
+                key={item.image}
                 className={`${s.service} ${service === i ? s.serviceOpen : ""}`}
               >
                 <button
@@ -431,7 +438,10 @@ export default function App() {
                     <p>{item.text}</p>
                     <span className={s.eyebrow}>{item.tags}</span>
                   </div>
-                  <a href="#contact" aria-label={`Discuss ${item.name}`}>
+                  <a
+                    href="#contact"
+                    aria-label={t("services.discuss", { name: item.name })}
+                  >
                     <ArrowUpRight size={32} />
                   </a>
                 </div>
@@ -457,8 +467,8 @@ export default function App() {
           }}
         >
           <div className={s.sectionTop}>
-            <span className={s.eyebrow}>04 / A FRIENDLY REMINDER</span>
-            <span className={s.eyebrow}>TURN UP THE FEELING.</span>
+            <span className={s.eyebrow}>{t("experiment.kicker")}</span>
+            <span className={s.eyebrow}>{t("experiment.note")}</span>
           </div>
           <div className={s.experimentArt} aria-hidden="true">
             <i />
@@ -466,49 +476,50 @@ export default function App() {
             <i />
           </div>
           <h2 data-experiment>
-            GOOD DESIGN
+            {t("experiment.line1")}
             <br />
-            IS NEVER
+            {t("experiment.line2")}
             <br />
-            <span>INVISIBLE.</span>
+            <span>{t("experiment.line3")}</span>
           </h2>
           <div className={s.experimentBottom}>
             <span>
-              MAKE A MARK.
+              {t("experiment.mark")}
               <br />
-              LEAVE A FEELING.
+              {t("experiment.feeling")}
             </span>
             <span className={s.experimentStar} aria-hidden="true">
               ✳
             </span>
             <span>
-              THAT’S THE
+              {t("experiment.effect1")}
               <br />
-              MONO EFFECT. ↗
+              {t("experiment.effect2")}
             </span>
           </div>
         </section>
         <section id="contact" className={s.contact}>
           <div className={s.sectionTop}>
-            <span className={s.eyebrow}>05 / NEXT STARTS HERE</span>
+            <span className={s.eyebrow}>{t("contact.kicker")}</span>
             <span className={s.availability}>
-              <i /> OPEN TO NEW POSSIBILITIES
+              <i />
+              {t("contact.available")}
             </span>
           </div>
           <h2 data-reveal>
-            HAVE A PROJECT?
+            {t("contact.line1")}
             <br />
-            LET’S MAKE IT
+            {t("contact.line2")}
             <br />
-            <span>IMPOSSIBLE</span>
+            <span>{t("contact.line3")}</span>
             <br />
-            TO IGNORE.
+            {t("contact.line4")}
           </h2>
           <div className={s.contactAction}>
             <p>
-              Big ambition? Unusual idea?
+              {t("contact.note1")}
               <br />
-              We’d like to hear it.
+              {t("contact.note2")}
             </p>
             <Magnetic
               className={s.conversation}
@@ -517,19 +528,17 @@ export default function App() {
                 if (!form)
                   setTimeout(
                     () =>
-                      document
-                        .getElementById("brief")
-                        ?.scrollIntoView({
-                          behavior: reduced ? "instant" : "smooth",
-                          block: "start",
-                        }),
+                      document.getElementById("brief")?.scrollIntoView({
+                        behavior: reduced ? "instant" : "smooth",
+                        block: "start",
+                      }),
                     80,
                   );
               }}
               aria-expanded={form}
               aria-controls="brief"
             >
-              {form ? "CLOSE THE BRIEF" : "START A CONVERSATION"}
+              {t(form ? "contact.close" : "contact.start")}
               {form ? <X /> : <ArrowUpRight size={28} />}
             </Magnetic>
           </div>
@@ -543,20 +552,21 @@ export default function App() {
       <footer className={s.footer}>
         <div className={s.footerTop}>
           <p>
-            Independent digital studio.
+            {t("footer.line1")}
             <br />
-            Made of different.
+            {t("footer.line2")}
           </p>
           <div>
-            <span className={s.eyebrow}>EXPLORE</span>
-            <a href="#work">Work</a>
-            <a href="#studio">Studio</a>
-            <a href="#services">Services</a>
+            <span className={s.eyebrow}>{t("footer.explore")}</span>
+            <a href="#work">{t("nav.work")}</a>
+            <a href="#studio">{t("nav.studio")}</a>
+            <a href="#services">{t("nav.services")}</a>
           </div>
           <div>
-            <span className={s.eyebrow}>LET’S CONNECT</span>
+            <span className={s.eyebrow}>{t("footer.connect")}</span>
             <a href="#contact">
-              Project enquiries <ArrowUpRight size={14} />
+              {t("footer.enquiries")}
+              <ArrowUpRight size={14} />
             </a>
             <a
               href="https://github.com/Entrils/MONO_Digital"
@@ -566,30 +576,33 @@ export default function App() {
               GitHub <ArrowUpRight size={14} />
             </a>
             <span className={s.conceptNote}>
-              A fictional studio concept.
+              {t("footer.concept1")}
               <br />
-              Social channels coming with launch.
+              {t("footer.concept2")}
             </span>
           </div>
-          <a href="#" className={s.backTop} aria-label="Back to top">
+          <a href="#" className={s.backTop} aria-label={t("footer.back")}>
             <ArrowUp />
-            <span>BACK TO TOP</span>
+            <span>{t("footer.backText")}</span>
           </a>
         </div>
-        <a href="#" className={s.footerLogo} aria-label="MONO back to top">
+        <a href="#" className={s.footerLogo} aria-label={t("footer.home")}>
           MONO<sup>®</sup>
           <MoveUpRight aria-hidden="true" />
         </a>
         <div className={s.footerBottom}>
           <span>© 2026 MONO® DIGITAL STUDIO</span>
-          <span>DESIGNED TO FEEL DIFFERENT.</span>
+          <span>{t("footer.tagline")}</span>
           <span>
-            LOCAL TIME <Clock />
+            {t("footer.time")} <Clock />
           </span>
         </div>
       </footer>
       {project && (
-        <ProjectDialog project={project} onClose={() => setProject(null)} />
+        <ProjectDialog
+          project={projects.find((item) => item.image === project)}
+          onClose={() => setProject(null)}
+        />
       )}
     </div>
   );

@@ -1,7 +1,9 @@
 import { useRef, useEffect } from "react";
 import { X, ArrowUpRight } from "lucide-react";
+import { useLanguage } from "../i18n/LanguageContext";
 import s from "../App.module.css";
 export default function ProjectDialog({ project, onClose }) {
+  const { t } = useLanguage();
   const ref = useRef();
   useEffect(() => {
     ref.current.showModal();
@@ -24,16 +26,18 @@ export default function ProjectDialog({ project, onClose }) {
         autoFocus
         className={s.close}
         onClick={onClose}
-        aria-label="Close project"
+        aria-label={t("project.close")}
       >
         <X />
       </button>
       <img
         src={`/art/${project.image}.svg`}
-        alt={`${project.name} concept visual`}
+        alt={t("project.visual", { name: project.name })}
       />
       <div className={s.dialogBody}>
-        <span className={s.eyebrow}>CONCEPT PROJECT / {project.year}</span>
+        <span className={s.eyebrow}>
+          {t("project.kicker")} / {project.year}
+        </span>
         <h2 id="project-title">{project.name}</h2>
         <h3>{project.tag}</h3>
         <p>{project.description}</p>
@@ -52,7 +56,8 @@ export default function ProjectDialog({ project, onClose }) {
               .scrollIntoView({ behavior: "instant" });
           }}
         >
-          Let’s make something like this <ArrowUpRight />
+          {t("project.cta")}
+          <ArrowUpRight />
         </button>
       </div>
     </dialog>
