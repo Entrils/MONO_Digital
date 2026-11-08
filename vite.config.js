@@ -5,9 +5,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ["react", "react-dom", "react/jsx-runtime"],
-          three: ["three", "@react-three/fiber", "@react-three/drei"],
+        onlyExplicitManualChunks: true,
+        manualChunks(id) {
+          if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "react";
+          if (id.includes("node_modules/") && !/node_modules\/(gsap|lenis|lucide-react)\//.test(id)) return "three";
         },
       },
     },
