@@ -26,6 +26,14 @@ export default function ContactForm() {
   const services = getServices(language);
   const [submitted, setSubmitted] = useState(false);
   const ref = useRef();
+  const copyFallback = useRef();
+  const [copyState, setCopyState] = useState("");
+  useEffect(() => {
+    if (copyState === "manual") {
+      copyFallback.current?.focus();
+      copyFallback.current?.select();
+    }
+  }, [copyState]);
   const currency = new Intl.NumberFormat(
     language === "ru" ? "ru-RU" : "en-US",
     {
@@ -40,7 +48,7 @@ export default function ContactForm() {
         field.setCustomValidity(validationMessage(field, t));
     }
   }, [t]);
-  const emailDraft = () => {
+  const briefText = () => {
     const fields = ref.current.elements;
     const body = [
       `${t("form.name")}: ${fields.name.value}`,
@@ -50,7 +58,19 @@ export default function ContactForm() {
       "",
       fields.message.value,
     ].join("\n");
-    return `mailto:${studio.email}?subject=${encodeURIComponent(`MONO — ${fields.name.value}`)}&body=${encodeURIComponent(body)}`;
+    return body;
+  };
+  const emailDraft = () =>
+    `mailto:${studio.email}?subject=${encodeURIComponent(`MONO — ${ref.current.elements.name.value}`)}&body=${encodeURIComponent(briefText())}`;
+  const copyBrief = async () => {
+    try {
+      if (!navigator.clipboard?.writeText)
+        throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(briefText());
+      setCopyState("copied");
+    } catch {
+      setCopyState("manual");
+    }
   };
   return (
     <form
@@ -59,6 +79,7 @@ export default function ContactForm() {
       onInput={(event) => {
         event.target.setCustomValidity?.("");
         setSubmitted(false);
+        setCopyState("");
       }}
       onInvalidCapture={(event) =>
         event.target.setCustomValidity(validationMessage(event.target, t))
@@ -149,6 +170,29 @@ export default function ContactForm() {
           <a className={s.submit} href={emailDraft()}>
             {t("form.emailAction")} <ArrowUpRight size={18} />
           </a>
+          <div className={s.briefUtilities}>
+            <button type="button" onClick={copyBrief}>
+              {t("form.copy")}
+            </button>
+            <a
+              download="MONO-brief.txt"
+              href={`data:text/plain;charset=utf-8,${encodeURIComponent(briefText())}`}
+            >
+              {t("form.download")}
+            </a>
+          </div>
+          {copyState && <p role="status">{t(`form.${copyState}`)}</p>}
+          {copyState === "manual" && (
+            <label>
+              {t("form.briefText")}
+              <textarea
+                ref={copyFallback}
+                readOnly
+                value={briefText()}
+                rows={6}
+              />
+            </label>
+          )}
           <p>
             {t("form.emailHelp")}{" "}
             <a href={`mailto:${studio.email}`}>{studio.email}</a>

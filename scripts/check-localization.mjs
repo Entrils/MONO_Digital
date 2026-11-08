@@ -1,6 +1,7 @@
 import { build } from "esbuild";
 import { JSDOM } from "jsdom";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("..", import.meta.url)).replace(/\/$/, "");
 await build({
@@ -14,13 +15,19 @@ await build({
   platform: "node",
   format: "esm",
   outfile: root + "/node_modules/.cache/mono-localization-qa.mjs",
-  loader: { ".css": "empty" },
+  loader: { ".css": "local-css" },
   packages: "external",
 });
 const dom = new JSDOM(
   '<!doctype html><html lang="en"><head></head><body><div id="root"></div></body></html>',
   { url: "https://mono.test/?campaign=launch#work", pretendToBeVisual: true },
 );
+const style = dom.window.document.createElement("style");
+style.textContent = readFileSync(
+  root + "/node_modules/.cache/mono-localization-qa.css",
+  "utf8",
+);
+dom.window.document.head.append(style);
 for (const name of [
   "window",
   "document",
@@ -53,6 +60,9 @@ window.matchMedia = globalThis.matchMedia = (q) => ({
 });
 window.scrollTo = () => {};
 Element.prototype.scrollIntoView = () => {};
+window.HTMLDialogElement.prototype.close = function () {
+  this.removeAttribute("open");
+};
 window.HTMLDialogElement.prototype.showModal = function () {
   this.setAttribute("open", "");
 };
@@ -115,9 +125,13 @@ renderer.render(
 const flush = () => new Promise((r) => setTimeout(r, 50));
 await new Promise((r) => setTimeout(r, 900));
 const ru = () =>
-  document.querySelector('[data-language-switcher] button[lang="ru"]');
+  (document.querySelector("#mobile-menu") || document).querySelector(
+    '[data-language-switcher] button[lang="ru"]',
+  );
 const en = () =>
-  document.querySelector('[data-language-switcher] button[lang="en"]');
+  (document.querySelector("#mobile-menu") || document).querySelector(
+    '[data-language-switcher] button[lang="en"]',
+  );
 const change = async (locale) => {
   (locale === "ru" ? ru() : en()).click();
   await flush();
@@ -157,7 +171,7 @@ assert.equal(
 );
 await change("ru");
 assert.equal(document.documentElement.lang, "ru");
-assert.match(document.title, /Независимая/);
+assert.match(document.title, /Айдентика/);
 assert.match(
   document.querySelector('meta[name="description"]').content,
   /независимая/,
@@ -199,6 +213,36 @@ assert.ok(draft);
 assert.match(draft.href, /^mailto:mono_art_design@gmail.com\?/);
 assert.match(decodeURIComponent(draft.href), /Александр/);
 assert.match(decodeURIComponent(draft.href), /alex@example.com/);
+const download = form.querySelector("a[download]");
+assert.equal(download.download, "MONO-brief.txt");
+assert.match(decodeURIComponent(download.href), /Александр/);
+const copyButton = [...form.querySelectorAll("button")].find(
+  (button) => button.textContent === messages.ru["form.copy"],
+);
+let copied = "";
+Object.defineProperty(navigator, "clipboard", {
+  configurable: true,
+  value: {
+    writeText: async (text) => {
+      copied = text;
+    },
+  },
+});
+copyButton.click();
+await flush();
+assert.match(copied, /alex@example.com/);
+assert.match(form.textContent, /Бриф скопирован/);
+Object.defineProperty(navigator, "clipboard", {
+  configurable: true,
+  value: {
+    writeText: async () => {
+      throw new Error("Denied");
+    },
+  },
+});
+copyButton.click();
+await flush();
+assert.match(form.querySelector("textarea[readonly]").value, /Александр/);
 await change("en");
 assert.match(
   form.querySelector('[role="status"]').textContent,
@@ -211,6 +255,12 @@ await flush();
 await change("ru");
 assert.equal(menu.getAttribute("aria-expanded"), "true");
 assert.match(document.querySelector("#mobile-menu").textContent, /Работы/);
+assert.ok(document.querySelector("main").hasAttribute("inert"));
+assert.ok(document.querySelector("header").hasAttribute("inert"));
+assert.equal(
+  document.querySelector("#mobile-menu").getAttribute("aria-modal"),
+  "true",
+);
 assert.match(menu.getAttribute("aria-label"), /Закрыть/);
 const links = [...document.querySelectorAll("#mobile-menu a")];
 links.at(-1).focus();
@@ -221,7 +271,7 @@ document.dispatchEvent(
     cancelable: true,
   }),
 );
-assert.equal(document.activeElement, menu);
+assert.equal(document.activeElement, en());
 document.dispatchEvent(
   new window.KeyboardEvent("keydown", {
     key: "Tab",
@@ -231,7 +281,7 @@ document.dispatchEvent(
 );
 assert.equal(
   document.activeElement,
-  en(),
+  ru(),
   "Language control is part of mobile focus cycle",
 );
 document.dispatchEvent(
@@ -239,6 +289,8 @@ document.dispatchEvent(
 );
 await flush();
 assert.equal(menu.getAttribute("aria-expanded"), "false");
+assert.ok(!document.querySelector("main").hasAttribute("inert"));
+assert.equal(document.activeElement, menu);
 const service = document.querySelector('[aria-controls="service-2"]');
 service.click();
 await flush();
@@ -250,6 +302,24 @@ const dialog = document.querySelector("dialog");
 assert.ok(dialog.hasAttribute("open"));
 assert.match(dialog.textContent, /За пределами привычного/);
 assert.match(dialog.textContent, /Стратегия бренда/);
+const specimen = [...dialog.querySelectorAll("p")].find((p) =>
+  p.textContent.includes("Ideas"),
+);
+assert.ok(specimen);
+assert.equal(
+  getComputedStyle(specimen).color,
+  "rgb(32, 33, 31)",
+  "Specimen text remains dark on paper",
+);
+const screenTitle = [...dialog.querySelectorAll("h4")].find((h) =>
+  h.textContent.includes("Independent"),
+);
+assert.equal(
+  getComputedStyle(screenTitle).textTransform,
+  "none",
+  "Mockup headings are isolated from prose styles",
+);
+assert.equal(getComputedStyle(screenTitle).color, "rgb(32, 33, 31)");
 document.querySelector('[aria-label="Закрыть проект"]').click();
 await flush();
 assert.equal(document.querySelector("dialog"), null);
