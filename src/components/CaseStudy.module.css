@@ -65,7 +65,9 @@
   padding: 35px;
 }
 .specimen p {
-  font: 500 clamp(35px, 5vw, 70px)/1 var(--display);
+  font:
+    500 clamp(35px, 5vw, 70px)/1 "Space Grotesk",
+    sans-serif;
   letter-spacing: -0.06em;
   margin: 30px 0;
 }
@@ -250,15 +252,15 @@
   align-self: start;
 }
 .products > button > div {
-  height: 190px;
   overflow: hidden;
   background: #cdcbbb;
+  height: auto;
+  aspect-ratio: 4/5;
 }
 .products img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.7);
 }
 .products strong {
   font: 500 16px var(--display);
@@ -294,20 +296,24 @@
     margin-top: 25px;
   }
   .spread img {
-    min-height: 200px;
+    height: auto;
+    min-height: 0;
   }
   .screenStage {
     padding: 18px;
-    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
   }
   .screen {
     padding: 12px;
-    width: 65%;
+    width: 100%;
   }
   .phone {
-    width: 35%;
-    min-width: 100px;
     padding: 15px 7px;
+    width: 150px;
+    min-width: 0;
+    transform: none;
   }
   .screen header span {
     display: none;
@@ -325,18 +331,40 @@
   .products {
     grid-template-columns: 1fr;
   }
-  .products > button > div {
-    height: 230px;
-  }
   .products img {
-    transform: scale(1.2);
   }
   .shopHero h4 {
     left: 12px;
     bottom: 10px;
-    max-width: 200px;
+    font-size: clamp(18px, 6vw, 30px);
+    max-width: 85%;
   }
   .palette > div {
     padding: 20px 10px;
   }
+  .spread {
+    grid-template-columns: 1fr;
+  }
+  .mark strong {
+    font-size: clamp(22px, 7vw, 35px);
+  }
+}
+
+.specimen p,
+.spread h4,
+.spread p,
+.screen h4,
+.phone h4,
+.phone p {
+  color: #20211f;
+  text-transform: none;
+}
+.identity,
+.palette,
+.spread,
+.screenStage,
+.screen,
+.phone,
+.shop {
+  min-width: 0;
 }

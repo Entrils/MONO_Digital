@@ -88,6 +88,19 @@
 }
 .mobileMenu {
   display: none;
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  border: 0;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  padding: 120px var(--gutter) 35px;
+  background: var(--lime);
+  color: #101010;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .eyebrow {
   font: 10px/1.6 var(--mono);
@@ -579,29 +592,29 @@
 .dialogBody {
   padding: 40px 48px 48px;
 }
-.dialogBody h2 {
+.dialogBody > h2 {
   font: 500 clamp(36px, 5vw, 60px) var(--display);
   letter-spacing: -0.05em;
   margin: 20px 0;
 }
-.dialogBody h3 {
+.dialogBody > h3 {
   font: 400 24px/1.3 var(--display);
   margin-bottom: 25px;
 }
-.dialogBody h4 {
+.dialogBody > h4 {
   font: 10px var(--mono);
   color: #999;
   margin: 28px 0 10px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.dialogBody p {
+.dialogBody > p {
   font-size: 13px;
   line-height: 1.9;
   color: #bbb;
   max-width: 760px;
 }
-.dialogBody ul {
+.dialogBody > ul {
   padding: 10px 0 20px 16px;
   font: 10px/2 var(--mono);
   color: #bbb;
@@ -659,17 +672,6 @@
     min-height: 38px;
     min-width: 38px;
   }
-  .mobileMenu {
-    display: flex;
-    position: fixed;
-    inset: 0;
-    background: var(--lime);
-    color: #101010;
-    z-index: 45;
-    flex-direction: column;
-    justify-content: center;
-    padding: 100px var(--gutter) 35px;
-  }
   .mobileMenu > .eyebrow {
     color: #333;
     margin-bottom: 25px;
@@ -694,23 +696,6 @@
     font-size: 11px;
     line-height: 1.7;
     margin-top: 30px;
-  }
-  .app:has(.mobileMenu) .header {
-    background: var(--lime);
-    color: #101010;
-    backdrop-filter: none;
-    border: 0;
-  }
-  .app:has(.mobileMenu) .languageSwitcher {
-    border-color: #10101040;
-  }
-  .app:has(.mobileMenu) .languageSwitcher button[aria-pressed="true"] {
-    background: #101010;
-    color: var(--lime);
-  }
-  .app:has(.mobileMenu) button:focus-visible,
-  .mobileMenu a:focus-visible {
-    outline-color: #101010;
   }
   .hero {
     padding: 130px var(--gutter) 55px;
@@ -869,10 +854,10 @@
   .dialogBody {
     padding: 30px 25px;
   }
-  .dialogBody h3 {
+  .dialogBody > h3 {
     font-size: 22px;
   }
-  .dialogBody p {
+  .dialogBody > p {
     font-size: 12px;
   }
   .close {
@@ -880,6 +865,19 @@
   }
   .dialog > img {
     max-height: none;
+  }
+  .studiesHeading {
+    display: block;
+  }
+  .studiesHeading p {
+    margin-top: 15px;
+  }
+  .briefUtilities {
+    flex-direction: column;
+  }
+  .briefUtilities button,
+  .briefUtilities a {
+    text-align: center;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -889,4 +887,88 @@
 }
 .work button:focus-visible {
   outline-color: #101010;
+}
+.mobileMenu[open] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.mobileMenu::backdrop {
+  background: var(--lime);
+}
+.mobileMenuTop {
+  position: absolute;
+  top: 20px;
+  left: var(--gutter);
+  right: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.menuClose {
+  display: grid;
+  place-items: center;
+  background: none;
+  color: inherit;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+.mobileMenu .languageSwitcher {
+  border-color: #10101040;
+}
+.mobileMenu .languageSwitcher button[aria-pressed="true"] {
+  background: #101010;
+  color: var(--lime);
+}
+.mobileMenu :focus-visible {
+  outline-color: #101010;
+}
+@media (max-height: 500px) {
+  .mobileMenu[open] {
+    justify-content: flex-start;
+  }
+  .mobileMenu > a {
+    font-size: 32px;
+    line-height: 1.3;
+  }
+}
+.briefUtilities {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+.briefUtilities button,
+.briefUtilities a {
+  padding: 14px 18px;
+  border: 1px solid #666;
+  background: none;
+  color: var(--paper);
+  font: 11px var(--mono);
+}
+.draftActions > label {
+  margin-top: 20px;
+}
+.studiesHeading {
+  margin: 55px 0 30px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 25px;
+}
+.studiesHeading h3 {
+  font: 500 clamp(23px, 3vw, 36px) var(--display);
+  letter-spacing: -0.04em;
+}
+.studiesHeading p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #666;
+  max-width: 320px;
+}
+.projectGroupLabel {
+  font: 10px var(--mono);
+  color: #666;
+  margin-bottom: 20px;
 }
