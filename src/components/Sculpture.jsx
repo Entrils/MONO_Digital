@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, Component } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
+import s from "../App.module.css";
 class Boundary extends Component {
   state = { failed: false };
   static getDerivedStateFromError() {
@@ -8,7 +9,7 @@ class Boundary extends Component {
   }
   render() {
     return this.state.failed ? (
-      <div className="chromeFallback" aria-hidden="true">
+      <div className={s.chromeFallback} aria-hidden="true">
         ✳
       </div>
     ) : (
@@ -48,7 +49,6 @@ export default function Sculpture({ reduced }) {
   }, []);
   return (
     <div ref={holder} style={{ width: "100%", height: "100%" }}>
-      {" "}
       <Boundary>
         <Canvas
           frameloop={active && !reduced ? "always" : "demand"}
