@@ -59,7 +59,10 @@ window.matchMedia = globalThis.matchMedia = (q) => ({
   removeEventListener() {},
 });
 window.scrollTo = () => {};
-Element.prototype.scrollIntoView = () => {};
+const scrollCalls = [];
+Element.prototype.scrollIntoView = function () {
+  scrollCalls.push(this.id);
+};
 window.HTMLDialogElement.prototype.close = function () {
   this.removeAttribute("open");
 };
@@ -200,6 +203,27 @@ assert.equal(
 );
 fill(form.elements.email, "alex@example.com");
 assert.equal(form.checkValidity(), true);
+fill(form.elements.budget, "");
+assert.equal(form.checkValidity(), true, "Budget is optional");
+form.elements.currency.value = "RUB";
+form.elements.currency.dispatchEvent(
+  new window.Event("change", { bubbles: true }),
+);
+await flush();
+assert.equal(form.elements.budget.value, "");
+fill(form.elements.budget, "600000-1200000");
+assert.equal(form.elements.currency.value, "RUB");
+const briefToggle = document.querySelector('[aria-controls="brief"]');
+briefToggle.click();
+await flush();
+assert.ok(document.getElementById("brief").hidden);
+briefToggle.click();
+await flush();
+assert.equal(document.querySelector("form"), form);
+assert.equal(form.elements.name.value, "Александр");
+assert.equal(form.elements.email.value, "alex@example.com");
+assert.equal(form.elements.budget.value, "600000-1200000");
+assert.equal(form.elements.currency.value, "RUB");
 form.dispatchEvent(
   new window.Event("submit", { bubbles: true, cancelable: true }),
 );
@@ -213,6 +237,7 @@ assert.ok(draft);
 assert.match(draft.href, /^mailto:mono_art_design@gmail.com\?/);
 assert.match(decodeURIComponent(draft.href), /Александр/);
 assert.match(decodeURIComponent(draft.href), /alex@example.com/);
+assert.match(decodeURIComponent(draft.href), /RUB/);
 const download = form.querySelector("a[download]");
 assert.equal(download.download, "MONO-brief.txt");
 assert.match(decodeURIComponent(download.href), /Александр/);
@@ -296,10 +321,24 @@ service.click();
 await flush();
 assert.equal(document.getElementById("service-2").hidden, false);
 assert.match(service.textContent, /Креативная/);
-document.querySelector('[aria-label^="Открыть AETHER"]').click();
+const aetherLink = document.querySelector('[data-project="aether"]');
+assert.equal(new URL(aetherLink.href).searchParams.get("project"), "aether");
+aetherLink.focus();
+aetherLink.click();
 await flush();
-const dialog = document.querySelector("dialog");
+let dialog = document.querySelector("dialog");
 assert.ok(dialog.hasAttribute("open"));
+assert.equal(
+  new URL(window.location.href).searchParams.get("project"),
+  "aether",
+);
+window.history.back();
+await flush();
+assert.equal(document.querySelector("dialog"), null);
+window.history.forward();
+await flush();
+assert.equal(document.querySelector("#project-title").textContent, "AETHER");
+dialog = document.querySelector("dialog");
 assert.match(dialog.textContent, /За пределами привычного/);
 assert.match(dialog.textContent, /Стратегия бренда/);
 const specimen = [...dialog.querySelectorAll("p")].find((p) =>
@@ -320,6 +359,19 @@ assert.equal(
   "Mockup headings are isolated from prose styles",
 );
 assert.equal(getComputedStyle(screenTitle).color, "rgb(32, 33, 31)");
+scrollCalls.length = 0;
+[...dialog.querySelectorAll("button")]
+  .find((b) => b.textContent.trim() === messages.ru["project.cta"])
+  .click();
+await flush();
+await flush();
+assert.equal(document.querySelector("dialog"), null);
+assert.equal(document.activeElement, document.querySelector("#contact h2"));
+assert.equal(window.location.hash, "#contact");
+assert.equal(scrollCalls.at(-1), "contact");
+aetherLink.focus();
+aetherLink.click();
+await flush();
 document.querySelector('[aria-label="Закрыть проект"]').click();
 await flush();
 assert.equal(document.querySelector("dialog"), null);
@@ -341,6 +393,33 @@ await flush();
 assert.equal(item.getAttribute("aria-expanded"), "true");
 document.querySelector('[aria-label="Закрыть проект"]').click();
 await flush();
+renderer.unmount();
+await flush();
+h("/?lang=ru&project=aether&campaign=shared#work");
+renderer = createRoot(document.getElementById("root"));
+renderer.render(
+  React.createElement(LanguageProvider, null, React.createElement(App)),
+);
+await flush();
+assert.equal(document.querySelector("#project-title").textContent, "AETHER");
+document.querySelector('[aria-label="Закрыть проект"]').click();
+await flush();
+assert.equal(document.querySelector("dialog"), null);
+assert.equal(
+  new URL(window.location.href).searchParams.get("campaign"),
+  "shared",
+);
+assert.equal(new URL(window.location.href).searchParams.get("lang"), "ru");
+assert.equal(new URL(window.location.href).searchParams.has("project"), false);
+renderer.unmount();
+await flush();
+h("/?project=unknown");
+renderer = createRoot(document.getElementById("root"));
+renderer.render(
+  React.createElement(LanguageProvider, null, React.createElement(App)),
+);
+await flush();
+assert.equal(document.querySelector("dialog"), null);
 renderer.unmount();
 await flush();
 h("/?campaign=reload");
@@ -384,6 +463,6 @@ renderer.unmount();
 window.Storage.prototype.getItem = getItem;
 window.Storage.prototype.setItem = setItem;
 console.log(
-  "PASS: EN/RU dictionary parity, URL/storage/browser priority, unsupported locales, translated metadata/content/case modal/validation, state-preserving form switch, accessible language controls, mobile focus/Escape, reload persistence, blocked storage, email draft recipient/body, catalogue filtering and item details. Browser layout not tested.",
+  "PASS: EN/RU dictionary parity, URL/storage/browser priority, unsupported locales, translated metadata/content/case modal/validation, state-preserving form switch, accessible language controls, mobile focus/Escape, reload persistence, blocked storage, email draft recipient/body, catalogue filtering, persistent collapsed brief, optional budget, RUB/USD, project deep links, Back/Forward and contact focus. Browser layout not tested.",
 );
 process.exit(0);
