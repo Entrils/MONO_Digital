@@ -7,7 +7,8 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test:i18n": "node scripts/check-localization.mjs"
+    "test:i18n": "node scripts/check-localization.mjs",
+    "prebuild": "node scripts/sync-metadata.mjs"
   },
   "dependencies": {
     "gsap": "^3.13.0",

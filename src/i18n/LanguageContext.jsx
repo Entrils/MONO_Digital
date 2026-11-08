@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { site } from "../site";
 import { messages } from "./messages";
 
 const LanguageContext = createContext(null);
@@ -67,6 +68,13 @@ export function LanguageProvider({ children }) {
     updateMeta("property", "og:title", t("seo.title"));
     updateMeta("property", "og:description", t("seo.description"));
     updateMeta("property", "og:locale", language === "ru" ? "ru_RU" : "en_US");
+    updateMeta("property", "og:image", site.origin + site.previewImage);
+    updateMeta("property", "og:image:alt", t("seo.imageAlt"));
+    updateMeta("property", "og:url", `${site.origin}/?lang=${language}`);
+    updateMeta("name", "twitter:card", "summary_large_image");
+    updateMeta("name", "twitter:title", t("seo.title"));
+    updateMeta("name", "twitter:description", t("seo.description"));
+    updateMeta("name", "twitter:image", site.origin + site.previewImage);
     try {
       window.localStorage.setItem(LANGUAGE_KEY, language);
     } catch {
